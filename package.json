@@ -1,12 +1,12 @@
 {
-  "name": "lightning-browser-extension",
-  "version": "1.0.0",
-  "description": "Lightning browser extension",
+  "name": "lnbits-link",
+  "version": "0.0.1",
+  "description": "LNbits browser extension",
   "private": true,
-  "repository": "https://github.com/bumi/lightning-browser-extension.git",
+  "repository": "https://github.com/bitcoincoretech/lnbits-link",
   "author": {
-    "name": "Michael Bumann",
-    "url": "https://michaelbumann.com"
+    "name": "motorina0",
+    "url": "https://bitcoincore.tech"
   },
   "license": "MIT",
   "engines": {

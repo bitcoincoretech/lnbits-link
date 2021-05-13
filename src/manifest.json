@@ -26,9 +26,9 @@
 
   "content_security_policy": "script-src 'self'; object-src 'self'",
 
-  "__chrome|firefox__author": "bumi",
+  "__chrome|firefox__author": "bitcoincore.tech",
   "__opera__developer": {
-    "name": "bumi"
+    "name": "bitcoincore.tech"
   },
 
   "__firefox__applications": {
