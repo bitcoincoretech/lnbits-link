@@ -16,7 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "laravel-mix": "^6.0.11",
-    "v-clipboard": "^2.2.3",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",
     "vue-template-compiler": "^2.6.12",
