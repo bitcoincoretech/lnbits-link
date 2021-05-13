@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "lint-staged": "^10.5.3",
+    "postcss": "^8.2.15",
     "prettier": "2.2.1"
   },
   "lint-staged": {
