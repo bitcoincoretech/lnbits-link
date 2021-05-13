@@ -26,6 +26,13 @@
       "id": "lnbits-browser-extension"
     }
   },
+  "__chrome|opera__options_page": "/options/options.html",
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true,
+    "__chrome__chrome_style": false
+  },
+
   "sidebar_action": {
     "default_icon": {
       "16": "img/favicon-16.png",

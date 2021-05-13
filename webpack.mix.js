@@ -14,6 +14,8 @@ mix
   .copy('src/app.html', 'dist/')
   .copy('src/manifest.json', 'dist/')
   .copyDirectory('src/assets/img', 'dist/img')
+  .copyDirectory('src/options', 'dist/options')
   .copy('src/assets/css/app.css', 'dist/')
   .js('src/assets/js/app.js', 'dist/')
+  .js('src/assets/js/options.js', 'dist/options')
   .vue()

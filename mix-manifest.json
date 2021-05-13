@@ -1,5 +1,6 @@
 {
     "/dist/app.js": "/dist/app.js",
+    "/dist/options/options.js": "/dist/options/options.js",
     "/dist/app.html": "/dist/app.html",
     "/dist/manifest.json": "/dist/manifest.json",
     "/dist/img/favicon-128.png": "/dist/img/favicon-128.png",
@@ -7,5 +8,6 @@
     "/dist/img/favicon-32.png": "/dist/img/favicon-32.png",
     "/dist/img/favicon-48.png": "/dist/img/favicon-48.png",
     "/dist/img/logo.png": "/dist/img/logo.png",
+    "/dist/options/options.html": "/dist/options/options.html",
     "/dist/app.css": "/dist/app.css"
 }
