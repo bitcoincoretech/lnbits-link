@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "Lightning",
-  "version": "1.0.0",
+  "name": "lnbits-link",
+  "version": "0.0.1",
 
   "icons": {
     "16": "assets/icons/favicon-16.png",
@@ -9,9 +9,9 @@
     "48": "assets/icons/favicon-48.png",
     "128": "assets/icons/favicon-128.png"
   },
-  "description": "Lightning up the browser",
-  "homepage_url": "https://github.com/bumi",
-  "short_name": "Lightning",
+  "description": "LNbits browser extension",
+  "homepage_url": "https://github.com/bitcoincoretech/lnbits-link",
+  "short_name": "lnbits link",
   "web_accessible_resources": ["js/inpageScript.bundle.js", "lsat.html"],
   "permissions": [
     "nativeMessaging",
