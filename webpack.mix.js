@@ -14,6 +14,7 @@ mix
   
   .copy('src/manifest.json', 'dist/')
   .copyDirectory('src/assets/img', 'dist/img')
+  .sass('src/assets/scss/base.scss', 'dist/css/base.css')
 
   .copy('src/views/popup/popup.html', 'dist/views/popup/')
   .copy('src/views/popup/style.css', 'dist/views/popup/')

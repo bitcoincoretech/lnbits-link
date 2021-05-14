@@ -3,7 +3,8 @@ html {
 }
 
 body {
-  background-color: gray;
+  min-width: 450px;
+  min-height: 600px;
   border: none;
   padding: 0;
   margin: 0;

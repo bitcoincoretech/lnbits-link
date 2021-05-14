@@ -1,6 +1,7 @@
 {
     "/dist/views/popup/popup.js": "/dist/views/popup/popup.js",
     "/dist/views/options/options.js": "/dist/views/options/options.js",
+    "/dist/css/base.css": "/dist/css/base.css",
     "/dist/manifest.json": "/dist/manifest.json",
     "/dist/img/favicon-128.png": "/dist/img/favicon-128.png",
     "/dist/img/favicon-16.png": "/dist/img/favicon-16.png",
