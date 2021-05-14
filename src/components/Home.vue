@@ -10,6 +10,22 @@
     <q-badge color="yellow" text-color="black">
       <span><span>USE WITH CAUTION - LNbits wallet is still in </span>BETA</span>
     </q-badge>
+
+    <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
+      <q-form @submit="connect" class="q-gutter-md">
+        <q-input filled dense v-model.trim="userId" type="text" label="User ID *"></q-input>
+        <q-input filled dense v-model.trim="serverUrl" type="text" label="LNbits Server URL *"></q-input>
+        <div class="row q-mt-lg">
+          <q-btn
+            unelevated
+            color="deep-purple"
+            :disable="userId == null || serverUrl == null"
+            type="submit"
+            >Connect</q-btn
+          >
+        </div>
+      </q-form>
+    </q-card>
   </div>
 </template>
 
