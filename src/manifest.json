@@ -18,7 +18,7 @@
   "content_security_policy": "script-src 'self' ; object-src 'self'",
   "applications": {
     "gecko": {
-      "id": "lnbits-browser-extension"
+      "id": "{1b321cac-7ba0-472b-a876-330faa3729fa}"
     }
   },
   "browser_action": {
@@ -26,10 +26,8 @@
     "default_title": "LNbits",
     "default_popup": "views/popup/popup.html"
   },
-  "__chrome|opera__options_page": "views/options/options.html",
   "options_ui": {
     "page": "views/options/options.html",
-    "open_in_tab": true,
-    "__chrome__chrome_style": false
+    "open_in_tab": true
   }
 }
