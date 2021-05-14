@@ -26,9 +26,9 @@
       "id": "lnbits-browser-extension"
     }
   },
-  "__chrome|opera__options_page": "/options/options.html",
+  "__chrome|opera__options_page": "views/options/options.html",
   "options_ui": {
-    "page": "options/options.html",
+    "page": "views/options/options.html",
     "open_in_tab": true,
     "__chrome__chrome_style": false
   },

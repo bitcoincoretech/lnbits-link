@@ -11,11 +11,16 @@ mix
       },
     },
   })
-  .copy('src/app.html', 'dist/')
+  
   .copy('src/manifest.json', 'dist/')
   .copyDirectory('src/assets/img', 'dist/img')
-  .copyDirectory('src/options', 'dist/options')
+  
+  .copy('src/app.html', 'dist/')
   .copy('src/assets/css/app.css', 'dist/')
   .js('src/assets/js/app.js', 'dist/')
-  .js('src/assets/js/options.js', 'dist/options')
+
+  .copy('src/views/options/options.html', 'dist/views/options/')
+  .copy('src/views/options/style.css', 'dist/views/options/')
+  .js('src/views/options/options.js', 'dist/views/options/')
+  
   .vue()
