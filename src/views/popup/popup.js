@@ -1,10 +1,10 @@
 import Vue from 'vue'
-import App from './components/App.vue'
+import Popup from '../../components/Popup.vue'
 
 // Mozilla's polyfill
 Vue.prototype.$browser = require('webextension-polyfill')
 
 new Vue({
-  el: '#app',
-  render: (h) => h(App),
+  el: '#popup',
+  render: (h) => h(Popup),
 })

@@ -1,0 +1,9 @@
+html {
+  font-size: 14px;
+}
+
+body {
+  min-width: 348px;
+  width: 100%;
+  background-color: gray;
+}

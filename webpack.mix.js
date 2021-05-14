@@ -14,10 +14,10 @@ mix
   
   .copy('src/manifest.json', 'dist/')
   .copyDirectory('src/assets/img', 'dist/img')
-  
-  .copy('src/app.html', 'dist/')
-  .copy('src/assets/css/app.css', 'dist/')
-  .js('src/assets/js/app.js', 'dist/')
+
+  .copy('src/views/popup/popup.html', 'dist/views/popup/')
+  .copy('src/views/popup/style.css', 'dist/views/popup/')
+  .js('src/views/popup/popup.js', 'dist/views/popup/')
 
   .copy('src/views/options/options.html', 'dist/views/options/')
   .copy('src/views/options/style.css', 'dist/views/options/')

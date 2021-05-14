@@ -1,5 +1,5 @@
 {
-    "/dist/app.js": "/dist/app.js",
+    "/dist/views/popup/popup.js": "/dist/views/popup/popup.js",
     "/dist/views/options/options.js": "/dist/views/options/options.js",
     "/dist/manifest.json": "/dist/manifest.json",
     "/dist/img/favicon-128.png": "/dist/img/favicon-128.png",
@@ -7,8 +7,8 @@
     "/dist/img/favicon-32.png": "/dist/img/favicon-32.png",
     "/dist/img/favicon-48.png": "/dist/img/favicon-48.png",
     "/dist/img/logo.png": "/dist/img/logo.png",
-    "/dist/app.html": "/dist/app.html",
-    "/dist/app.css": "/dist/app.css",
+    "/dist/views/popup/popup.html": "/dist/views/popup/popup.html",
+    "/dist/views/popup/style.css": "/dist/views/popup/style.css",
     "/dist/views/options/options.html": "/dist/views/options/options.html",
     "/dist/views/options/style.css": "/dist/views/options/style.css"
 }
