@@ -1,6 +1,6 @@
 # lnbits-link
 
-Lightweight browser plugin for LNbits that allows the user to connect to an existing **LNbits** server and make payments in the browser.
+Lightweight browser extensions for LNbits that allows the user to connect to an existing **LNbits** server and make payments in the browser.
 
 This extension does **not** require for the user to configure a Lightning Network node or to manage channels.
 Motivation:
