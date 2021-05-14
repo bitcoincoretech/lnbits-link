@@ -20,7 +20,7 @@ export default {
     return {
       userId: '',
       serverUrl: 'https://lnbits.com',
-      error: '11',
+      error: '',
     }
   },
   async mounted() {
