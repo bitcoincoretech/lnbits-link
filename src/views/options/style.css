@@ -3,7 +3,5 @@ html {
 }
 
 body {
-  min-width: 348px;
   width: 100%;
-  background-color: purple;
 }

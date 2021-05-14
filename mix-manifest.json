@@ -8,6 +8,8 @@
     "/dist/img/favicon-32.png": "/dist/img/favicon-32.png",
     "/dist/img/favicon-48.png": "/dist/img/favicon-48.png",
     "/dist/img/logo.png": "/dist/img/logo.png",
+    "/dist/fonts/material-icons-v50.woff2": "/dist/fonts/material-icons-v50.woff2",
+    "/dist/css/quasar.css": "/dist/css/quasar.css",
     "/dist/views/popup/popup.html": "/dist/views/popup/popup.html",
     "/dist/views/popup/style.css": "/dist/views/popup/style.css",
     "/dist/views/options/options.html": "/dist/views/options/options.html",

@@ -7,6 +7,9 @@
     >
       {{ error }}
     </div>
+    <q-badge color="yellow" text-color="black">
+      <span><span>USE WITH CAUTION - LNbits wallet is still in </span>BETA</span>
+    </q-badge>
   </div>
 </template>
 
