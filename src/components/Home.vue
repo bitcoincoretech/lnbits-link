@@ -1,7 +1,7 @@
 <template>
   <q-layout>
-    <q-header class="bg-lnbits-dark">
-      <q-toolbar>
+    <q-header bordered >
+      <q-toolbar class="bg-lnbits-dark">
         <q-toolbar-title> <strong>LN</strong>bits </q-toolbar-title>
 
         <q-badge color="yellow" text-color="black">
