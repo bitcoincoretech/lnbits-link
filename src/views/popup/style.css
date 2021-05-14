@@ -3,7 +3,13 @@ html {
 }
 
 body {
-  min-width: 348px;
-  width: 100%;
   background-color: gray;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+iframe {
+  border-width: 0px;
+  border-style: none;
 }
