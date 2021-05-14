@@ -2,7 +2,6 @@
   "name": "lnbits-extension",
   "version": "0.0.1",
   "description": "LNbits browser extension",
-  "main": "app.js",
   "scripts": {
     "dev": "mix",
     "watch": "mix watch",

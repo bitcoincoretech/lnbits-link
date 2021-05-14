@@ -11,11 +11,6 @@
     "48": "img/favicon-48.png",
     "128": "img/favicon-128.png"
   },
-  "browser_action": {
-    "default_icon": "img/favicon-48.png",
-    "default_title": "LNbits",
-    "default_popup": "views/popup/popup.html"
-  },
   "permissions": [
     "storage",
     "activeTab"
@@ -26,21 +21,15 @@
       "id": "lnbits-browser-extension"
     }
   },
+  "browser_action": {
+    "default_icon": "img/favicon-48.png",
+    "default_title": "LNbits",
+    "default_popup": "views/popup/popup.html"
+  },
   "__chrome|opera__options_page": "views/options/options.html",
   "options_ui": {
     "page": "views/options/options.html",
     "open_in_tab": true,
     "__chrome__chrome_style": false
-  },
-
-  "sidebar_action": {
-    "default_icon": {
-      "16": "img/favicon-16.png",
-      "32": "img/favicon-32.png",
-      "48": "img/favicon-48.png",
-      "128": "img/favicon-128.png"
-    },
-    "default_title": "LNbits",
-    "default_panel": "views/popup/popup.html"
   }
 }

@@ -1,5 +1,5 @@
 <template>
   <div class="p-3">
-   Popup
+   Popup Vue
   </div>
 </template>
