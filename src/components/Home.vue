@@ -37,7 +37,7 @@
                 type="text"
                 label="LNbits Server URL *"
               ></q-input>
-              <q-input filled dense v-model.trim="userId" type="text" label="User ID"></q-input>
+              <q-input filled dense v-model.trim="userId" type="text" label="User ID (optional, if empty one will be assigned to you)"></q-input>
 
               <div class="row q-mt-lg">
                 <q-btn
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       userId: '',
-      serverUrl: 'https://lnbits.com',
+      serverUrl: '',
       error: '',
     }
   },
@@ -94,7 +94,7 @@ export default {
   methods: {
     async getUserId() {
       try {
-        var result = await this.$browser.storage.sync.get({ getUserId: '' })
+        const result = await this.$browser.storage.sync.get({ getUserId: '' })
         return result.getUserId
       } catch (error) {
         console.error(error)
@@ -102,8 +102,8 @@ export default {
     },
     async getServerUrl() {
       try {
-        var result = await this.$browser.storage.sync.get({ serverUrl: '' })
-        return result.serverUrl
+        const result = await this.$browser.storage.sync.get({ serverUrl: '' })
+        return result.serverUrl || 'https://lnbits.com'
       } catch (error) {
         console.log(error)
       }
