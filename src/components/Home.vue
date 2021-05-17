@@ -1,6 +1,6 @@
 <template>
   <q-layout>
-    <q-header bordered >
+    <q-header bordered>
       <q-toolbar class="bg-lnbits-dark">
         <q-toolbar-title> <strong>LN</strong>bits </q-toolbar-title>
 
@@ -21,27 +21,36 @@
       {{ error }}
     </div>
 
-    <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <q-form @submit="connect" class="q-gutter-md">
-        <q-input filled dense v-model.trim="userId" type="text" label="User ID *"></q-input>
-        <q-input
-          filled
-          dense
-          v-model.trim="serverUrl"
-          type="text"
-          label="LNbits Server URL *"
-        ></q-input>
-        <div class="row q-mt-lg">
-          <q-btn
-            unelevated
-            color="deep-purple"
-            :disable="userId == null || serverUrl == null"
-            type="submit"
-            >Connect</q-btn
-          >
-        </div>
-      </q-form>
-    </q-card>
+    <q-page-container>
+      <q-page class="q-px-md q-py-lg" :class="{ 'q-px-lg': $q.screen.gt.xs }">
+        <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
+          <q-card-section>
+            <h6 class="text-subtitle1 q-my-none">Connect to LNbits</h6>
+          </q-card-section>
+          <q-card-section>
+            <q-form @submit="connect" class="q-gutter-md">
+              <q-input filled dense v-model.trim="userId" type="text" label="User ID *"></q-input>
+              <q-input
+                filled
+                dense
+                v-model.trim="serverUrl"
+                type="text"
+                label="LNbits Server URL *"
+              ></q-input>
+              <div class="row q-mt-lg">
+                <q-btn
+                  unelevated
+                  color="deep-purple"
+                  :disable="userId == null || serverUrl == null"
+                  type="submit"
+                  >Connect</q-btn
+                >
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-page>
+    </q-page-container>
   </q-layout>
 </template>
 
