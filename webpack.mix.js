@@ -9,6 +9,7 @@ mix
       alias: {
         vue$: 'vue/dist/vue.runtime.js',
         quasar$: 'quasar/dist/quasar.esm.js',
+        axios$: 'axios/index.js'
       },
     },
   })

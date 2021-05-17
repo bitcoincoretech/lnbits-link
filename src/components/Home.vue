@@ -37,7 +37,13 @@
                 type="text"
                 label="LNbits Server URL *"
               ></q-input>
-              <q-input filled dense v-model.trim="userId" type="text" label="User ID (optional, if empty one will be assigned to you)"></q-input>
+              <q-input
+                filled
+                dense
+                v-model.trim="userId"
+                type="text"
+                label="User ID (optional, if empty one will be assigned to you)"
+              ></q-input>
 
               <div class="row q-mt-lg">
                 <q-btn
@@ -51,12 +57,16 @@
             </q-form>
           </q-card-section>
         </q-card>
+        <iframe id="lnbits-com" nonce="lxS8LnlZ"></iframe>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
+import axios from 'axios'
+import $ from 'jquery'
+
 export default {
   name: 'home',
   data() {
@@ -74,6 +84,7 @@ export default {
     userId: {
       async handler(val) {
         try {
+          console.log('watch user ##### ', val)
           await this.$browser.storage.sync.set({ userId: val })
         } catch (error) {
           console.log(error)
@@ -94,8 +105,8 @@ export default {
   methods: {
     async getUserId() {
       try {
-        const result = await this.$browser.storage.sync.get({ getUserId: '' })
-        return result.getUserId
+        const result = await this.$browser.storage.sync.get({ userId: '' })
+        return result.userId
       } catch (error) {
         console.error(error)
       }
@@ -110,10 +121,55 @@ export default {
     },
     async connect() {
       console.log('!!!! connect !!!!')
+
+      const res = await axios.get(`${this.serverUrl}/wallet?usr=${this.userId}`)
+
+      console.log('res:', res)
+      console.log('res.request.responseURL', res.request.responseURL)
+      const div = $(res.data)
+      const scripts = []
+      div.each(function () {
+        if (this.nodeName === 'SCRIPT' && !this.src) {
+          scripts.push(this)
+        }
+      })
+      const user = extractUserFromScripts(scripts)
+      console.log('user', user)
+
+      const iFrame = document.getElementById('lnbits-com')
+      // TODO: no wallet found
+      iFrame.src = `${this.serverUrl}/wallet?usr=${this.userId}&wal=${user.wallets[0].id}`
     },
+
     async disconnect() {
       console.log('!!!! disconnect !!!!')
     },
   },
+}
+function extractUserFromScripts(scripts = []) {
+  // fragile and temporary hack
+  // TODO: request api/v1/user
+
+  const searchText = 'window.user ='
+  const userDataScript = scripts.find((s) => s.innerHTML.indexOf(searchText) != -1)
+  if (userDataScript) {
+    const userData = userDataScript.innerHTML
+    const startIndex = userData.indexOf(searchText)
+    const endIndex = userData.indexOf(';', startIndex)
+    const userStr = userData.substring(startIndex + searchText.length, endIndex)
+    const u = JSON.parse(userStr)
+    const wallets = (u[3] || []).map((wallet) => ({
+      id: wallet[0],
+      name: wallet[1],
+      balance: wallet[5],
+      adminKey: wallet[3],
+      invoiceKey: wallet[4],
+    }))
+    return {
+      userId: u[0],
+      wallets,
+    }
+  }
+  return null
 }
 </script>
