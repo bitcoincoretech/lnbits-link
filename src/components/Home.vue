@@ -64,8 +64,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import $ from 'jquery'
+import lnBitsConnect from '../utils/lnbits-scraper'
 
 export default {
   name: 'home',
@@ -122,18 +121,7 @@ export default {
     async connect() {
       console.log('!!!! connect !!!!')
 
-      const res = await axios.get(`${this.serverUrl}/wallet?usr=${this.userId}`)
-
-      console.log('res:', res)
-      console.log('res.request.responseURL', res.request.responseURL)
-      const div = $(res.data)
-      const scripts = []
-      div.each(function () {
-        if (this.nodeName === 'SCRIPT' && !this.src) {
-          scripts.push(this)
-        }
-      })
-      const user = extractUserFromScripts(scripts)
+      const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
       console.log('user', user)
 
       const iFrame = document.getElementById('lnbits-com')
@@ -145,31 +133,5 @@ export default {
       console.log('!!!! disconnect !!!!')
     },
   },
-}
-function extractUserFromScripts(scripts = []) {
-  // fragile and temporary hack
-  // TODO: request api/v1/user
-
-  const searchText = 'window.user ='
-  const userDataScript = scripts.find((s) => s.innerHTML.indexOf(searchText) != -1)
-  if (userDataScript) {
-    const userData = userDataScript.innerHTML
-    const startIndex = userData.indexOf(searchText)
-    const endIndex = userData.indexOf(';', startIndex)
-    const userStr = userData.substring(startIndex + searchText.length, endIndex)
-    const u = JSON.parse(userStr)
-    const wallets = (u[3] || []).map((wallet) => ({
-      id: wallet[0],
-      name: wallet[1],
-      balance: wallet[5],
-      adminKey: wallet[3],
-      invoiceKey: wallet[4],
-    }))
-    return {
-      userId: u[0],
-      wallets,
-    }
-  }
-  return null
 }
 </script>
