@@ -1,19 +1,12 @@
-html {
-  font-size: 14px;
-}
-
+html,
 body {
-  border: none;
-  padding: 0;
-  margin: 0;
+  width: 400px;
+  height: 550x;
+  overflow: auto;
 }
 
 .popup-body {
   width: 400px;
-  height: 550px;
-}
-
-iframe {
-  border-width: 0px;
-  border-style: none;
+  height: 550x;
+  overflow: auto;
 }

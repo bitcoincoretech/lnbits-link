@@ -22,14 +22,14 @@
     </div>
 
     <q-page-container>
-      <q-page class="q-px-md q-py-lg" :class="{ 'q-px-lg': $q.screen.gt.xs }">
-        <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
+      <q-page class="q-px-md q-py-lg">
+        <q-card>
           <q-card-section>
-            <h6 class="text-subtitle1 q-my-none">Connect to LNbits</h6>
+            <h3 class="q-my-none"><strong>LN</strong>bits</h3>
+            <h5 class="q-my-md">Free and open-source lightning wallet</h5>
           </q-card-section>
           <q-card-section>
             <q-form @submit="connect" class="q-gutter-md">
-              <q-input filled dense v-model.trim="userId" type="text" label="User ID *"></q-input>
               <q-input
                 filled
                 dense
@@ -37,6 +37,8 @@
                 type="text"
                 label="LNbits Server URL *"
               ></q-input>
+              <q-input filled dense v-model.trim="userId" type="text" label="User ID"></q-input>
+
               <div class="row q-mt-lg">
                 <q-btn
                   unelevated
