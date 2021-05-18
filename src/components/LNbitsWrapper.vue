@@ -8,7 +8,11 @@
 
     <q-footer>
       <q-toolbar class="bg-lnbits-dark">
-        <q-toolbar-title> <strong>LN</strong>bits </q-toolbar-title>
+        <q-icon name="account_box" clickable :color="'blue-grey-1'" :size="'32px'"></q-icon>
+        <q-space />
+        <q-icon name="fullscreen" clickable :color="'blue-grey-1'" :size="'32px'"></q-icon>
+         <q-space />
+        <q-icon name="open_in_new" clickable :color="'blue-grey-1'" :size="'32px'"></q-icon>
       </q-toolbar>
     </q-footer>
   </q-layout>
