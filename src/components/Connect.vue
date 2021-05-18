@@ -86,7 +86,7 @@
 import lnBitsConnect from '../utils/lnbits-scraper'
 
 export default {
-  name: 'home',
+  name: 'connect',
   data() {
     return {
       userId: '',
@@ -143,14 +143,16 @@ export default {
       const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
       console.log('user', user)
 
-      if (user && user.id) {
+      if (user && user.id && user.wallets && user.wallets.length) {
+        await this.$browser.storage.sync.set({ user })
         this.$router.push({
           path: 'lnbits',
           query: { userId: user.id, walletId: user.wallets[0].id },
         })
+      } else {
+        // TODO: no user/wallet found
+        console.error('!!!!!!!!!!!!!!!!!!!! cannot connect')
       }
-
-      // TODO: no user/wallet found
     },
 
     async disconnect() {

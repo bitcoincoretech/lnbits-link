@@ -1,9 +1,9 @@
-import Home from '../../components/Home.vue'
+import Connect from '../../components/Connect.vue'
 import LNbitsWrapper from '../../components/LNbitsWrapper.vue'
 
 const routes = [{
         path: '/connect',
-        component: Home
+        component: Connect
     },
     {
         path: '/lnbits',
