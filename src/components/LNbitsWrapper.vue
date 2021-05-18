@@ -65,7 +65,6 @@ export default {
   },
   methods: {
     gotoConnectPage() {
-      console.log('!!!!!!!!!!!!!!! goto connect')
       this.$router.push('connect')
     },
     gotoOptionsPage() {
@@ -86,6 +85,11 @@ export default {
         browser.tabs.create({ url })
       } catch (err) {
         console.error(err)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Unexpected error!',
+          caption: `Please check console logs.`,
+        })
       }
     },
   },

@@ -145,59 +145,76 @@ export default {
       }
     },
     async connect() {
-      console.log('!!!! connect !!!!')
+      try {
+        const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
 
-      const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
-      console.log('user', user)
+        if (!user || !user.id || !user.wallets || !user.wallets.length) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Cannot connect user!',
+            caption: `Please check that the 'Server URL' and 'User ID' are valid!`,
+          })
+          return
+        }
 
-      if (user && user.id && user.wallets && user.wallets.length) {
         await this.$browser.storage.sync.set({ user })
         this.$router.push({
           path: 'lnbits',
           query: { userId: user.id, walletId: user.wallets[0].id },
         })
-      } else {
-        // TODO: no user/wallet found
-        console.error('!!!!!!!!!!!!!!!!!!!! cannot connect')
+      } catch (err) {
+        console.error(err)
+        this.$q.notify({
+          type: 'negative',
+          message: 'Unexpected error!',
+          caption: `Please check console logs.`,
+        })
       }
     },
     async connectNewUser() {
-      console.log('!!!! connect new user !!!!')
+      try {
+        if (!this.serverUrl) {
+          this.$q.notify({
+            type: 'warning',
+            message: 'Server URL is missing!',
+          })
+          return
+        }
+        if (this.userId) {
+          this.$q.notify({
+            type: 'warning',
+            message: 'User ID must be empty. The old User ID will be lost!',
+            caption: 'Crate a back-up if you want to use it in the future!',
+            timeout: 10000,
+          })
+          return
+        }
 
-      if (!this.serverUrl) {
-        this.$q.notify({
-          type: 'warning',
-          message: 'Server URL is missing!',
+        const user = await lnBitsConnect.newUser(this.serverUrl)
+
+        if (!user || !user.id || !user.wallets || !user.wallets.length) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Cannot create new user!',
+            caption: `Please check that '${this.serverUrl}' is up.`,
+          })
+          return
+        }
+
+        await this.$browser.storage.sync.set({ userId: user.id })
+        await this.$browser.storage.sync.set({ user })
+        this.$router.push({
+          path: 'lnbits',
+          query: { userId: user.id, walletId: user.wallets[0].id },
         })
-        return
-      }
-      if (this.userId) {
-        this.$q.notify({
-          type: 'warning',
-          message: 'User ID must be empty. The old User ID will be lost!',
-          caption: 'Crate a back-up if you want to use it in the future!',
-          timeout: 10000,
-        })
-        return
-      }
-
-      const user = await lnBitsConnect.newUser(this.serverUrl)
-
-      if (!user || !user.id || !user.wallets || !user.wallets.length) {
+      } catch (err) {
+        console.error(err)
         this.$q.notify({
           type: 'negative',
-          message: 'Cannot create new user!',
-          caption: `Please check that '${this.serverUrl}' is up and running.`,
+          message: 'Unexpected error!',
+          caption: `Please check console logs.`,
         })
-        return
       }
-
-      await this.$browser.storage.sync.set({ userId: user.id })
-      await this.$browser.storage.sync.set({ user })
-      this.$router.push({
-        path: 'lnbits',
-        query: { userId: user.id, walletId: user.wallets[0].id },
-      })
     },
     async disconnect() {
       console.log('!!!! disconnect !!!!')
