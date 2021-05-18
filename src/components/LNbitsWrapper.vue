@@ -51,6 +51,14 @@ export default {
     const serverUrl = result.serverUrl
     // TODO: no user/wallet/serverUrl found
 
+    this.$q.notify({
+      type: 'info',
+      message: 'Loading...',
+      caption: serverUrl,
+      timeout: 1500,
+      spinner: true,
+    })
+
     const iFrame = document.getElementById('lnbits-site')
 
     iFrame.src = `${serverUrl}/wallet?usr=${userId}&wal=${walletId}`
