@@ -41,7 +41,7 @@ function _extractUserFromScripts(scripts = []) {
             invoiceKey: wallet[4],
         }))
         return {
-            userId: u[0],
+            id: u[0],
             wallets,
         }
     }

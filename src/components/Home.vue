@@ -59,6 +59,26 @@
         </q-card>
       </q-page>
     </q-page-container>
+    <q-footer class="bg-transparent q-px-lg q-py-md" :class="{ 'text-dark': !$q.dark.isActive }">
+      <q-toolbar>
+        <q-toolbar-title class="text-caption">
+          <strong>LN</strong>bits, free and open-source lightning wallet/accounts system
+        </q-toolbar-title>
+        <q-space></q-space>
+        <q-btn
+          flat
+          dense
+          :color="$q.dark.isActive ? 'white' : 'deep-purple'"
+          icon="code"
+          type="a"
+          href="https://github.com/lnbits/lnbits"
+          target="_blank"
+          rel="noopener"
+        >
+          <q-tooltip>View project in GitHub</q-tooltip>
+        </q-btn>
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -123,9 +143,14 @@ export default {
       const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
       console.log('user', user)
 
-      const iFrame = document.getElementById('lnbits-com')
-      // TODO: no wallet found
-      iFrame.src = `${this.serverUrl}/wallet?usr=${this.userId}&wal=${user.wallets[0].id}`
+      if (user && user.id) {
+        this.$router.push({
+          path: 'lnbits',
+          query: { userId: user.id, walletId: user.wallets[0].id },
+        })
+      }
+
+      // TODO: no user/wallet found
     },
 
     async disconnect() {
