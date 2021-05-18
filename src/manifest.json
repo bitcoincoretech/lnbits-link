@@ -29,5 +29,20 @@
   "options_ui": {
     "page": "views/options/options.html",
     "open_in_tab": true
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content_script/index.js"
+      ],
+      "css": ["css/quasar.css"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
 }

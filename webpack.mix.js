@@ -28,6 +28,8 @@ mix
   .copy('src/views/options/options.html', 'dist/views/options/')
   .copy('src/views/options/style.css', 'dist/views/options/')
   .js('src/views/options/options.js', 'dist/views/options/')
+
+  .js('src/content_script/index.js', 'dist/content_script/index.js')
   
   .vue()
  
