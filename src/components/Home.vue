@@ -131,6 +131,7 @@ export default {
 
     async disconnect() {
       console.log('!!!! disconnect !!!!')
+      // remove user info from storage
     },
   },
 }
