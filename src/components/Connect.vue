@@ -102,7 +102,6 @@ export default {
     userId: {
       async handler(val) {
         try {
-          console.log('watch user ##### ', val)
           await this.$browser.storage.sync.set({ userId: val })
         } catch (error) {
           console.log(error)
