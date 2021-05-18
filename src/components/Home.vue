@@ -57,7 +57,6 @@
             </q-form>
           </q-card-section>
         </q-card>
-        <iframe id="lnbits-com" nonce="lxS8LnlZ"></iframe>
       </q-page>
     </q-page-container>
   </q-layout>

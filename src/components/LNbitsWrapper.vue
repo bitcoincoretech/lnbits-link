@@ -1,5 +1,5 @@
 <template>
   <div class="p-3">
-    <router-view></router-view>
+    <iframe id="lnbits-com"></iframe>
   </div>
 </template>
