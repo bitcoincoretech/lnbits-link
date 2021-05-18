@@ -21,6 +21,25 @@ async function checkUser(serverUrl, userId) {
     }
 }
 
+async function newUser(serverUrl) {
+    try {
+        const res = await axios.get(`${serverUrl}/wallet?nme=Browser%20wallet`)
+        // handle 404 not found exception
+        console.log('res:', res)
+
+        const div = $(res.data)
+        const scripts = []
+        div.each(function () {
+            if (this.nodeName === 'SCRIPT' && !this.src) {
+                scripts.push(this)
+            }
+        })
+        return _extractUserFromScripts(scripts)
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 function _extractUserFromScripts(scripts = []) {
     // fragile and temporary hack
     // TODO: request api/v1/user
@@ -49,5 +68,6 @@ function _extractUserFromScripts(scripts = []) {
 }
 
 export default {
-    checkUser
+    checkUser,
+    newUser
 };

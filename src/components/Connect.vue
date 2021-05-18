@@ -42,16 +42,24 @@
                 dense
                 v-model.trim="userId"
                 type="text"
-                label="User ID (optional, if empty one will be assigned to you)"
+                label="User ID (optional)"
               ></q-input>
 
               <div class="row q-mt-lg">
                 <q-btn
-                  unelevated
                   color="deep-purple"
                   :disable="userId == null || serverUrl == null"
                   type="submit"
+                  unelevated
                   >Connect</q-btn
+                >
+                <q-space />
+                <q-btn
+                  @click="connectNewUser"
+                  color="purple"
+                  :disable="serverUrl == null"
+                  unelevated
+                  >New User</q-btn
                 >
               </div>
             </q-form>
@@ -153,7 +161,44 @@ export default {
         console.error('!!!!!!!!!!!!!!!!!!!! cannot connect')
       }
     },
+    async connectNewUser() {
+      console.log('!!!! connect new user !!!!')
 
+      if (!this.serverUrl) {
+        this.$q.notify({
+          type: 'warning',
+          message: 'Server URL is missing!',
+        })
+        return
+      }
+      if (this.userId) {
+        this.$q.notify({
+          type: 'warning',
+          message: 'User ID must be empty. The old User ID will be lost!',
+          caption: 'Crate a back-up if you want to use it in the future!',
+          timeout: 10000,
+        })
+        return
+      }
+
+      const user = await lnBitsConnect.newUser(this.serverUrl)
+
+      if (!user || !user.id || !user.wallets || !user.wallets.length) {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Cannot create new user!',
+          caption: `Please check that '${this.serverUrl}' is up and running.`,
+        })
+        return
+      }
+
+      await this.$browser.storage.sync.set({ userId: user.id })
+      await this.$browser.storage.sync.set({ user })
+      this.$router.push({
+        path: 'lnbits',
+        query: { userId: user.id, walletId: user.wallets[0].id },
+      })
+    },
     async disconnect() {
       console.log('!!!! disconnect !!!!')
       // remove user info from storage
