@@ -1,15 +1,22 @@
 <template>
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <!--
-        ...content
-        ... use q-card-section for it?
-      -->
+      <q-card>
+        <q-card-section>
+          <h3 class="q-my-none"><strong>LN</strong>bits</h3>
+          <h5 class="q-my-md">Free and open-source lightning wallet</h5>
+        </q-card-section>
+      </q-card>
 
       <!-- buttons example -->
-      <q-card-actions align="right">
+      <q-card-actions>
         <q-btn color="primary" label="OK" @click="onOKClick" />
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+        <!-- <div class="row q-mt-lg">
+          <q-btn color="deep-purple" unelevated>Connect</q-btn>
+          <q-space />
+          <q-btn color="purple" unelevated>New User</q-btn>
+        </div> -->
       </q-card-actions>
     </q-card>
   </q-dialog>
