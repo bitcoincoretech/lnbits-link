@@ -1,10 +1,12 @@
 import Vue from 'vue'
+import VueRouter from 'vuerouter'
 import Quasar from 'quasar'
 import {
-    Notify, Dialog
+    Notify,
+    Dialog
 } from 'quasar'
 
-
+import Layout from '../components/Layout'
 
 
 
@@ -15,19 +17,25 @@ const LNURL_PREFIX = BOLT11_PREFIX + 'LNURL'
 function handleLinkClick() {
     console.log("######################### handleLinkClick");
 
-
+    let app = null
+    let router = null
     document.addEventListener('DOMContentLoaded', function () {
         console.log("######################### document", document);
         const div = document.createElement("div")
         div.id = "lnbits-browser-extension"
         document.body.insertBefore(div, document.body.firstChild);
+        router = new VueRouter({})
         Vue.use(Quasar)
-        new Vue({
+        Vue.use(VueRouter)
+        Vue.use(Layout)
+        app = new Vue({
             el: '#lnbits-browser-extension',
             render: h => {
                 return '<div></div>'
-            }
+            },
+            router
         })
+        console.log("app", app)
     }, false);
 
 
@@ -46,7 +54,10 @@ function handleLinkClick() {
         }
         console.log('Quasar', Quasar)
         console.log('Dialog', Dialog)
-        Notify.create('Danger, Will Robinson! Danger!')
+        Dialog.create({
+            component: Layout,
+            parent: router.app.$root
+        })
 
     }, false);
 }
