@@ -42,7 +42,7 @@ window.addEventListener("message", (e) => {
 
 document.getElementById('lnbits-overlay')
   .addEventListener('click', function () {
-    browser.runtime.sendMessage('hide_popup')
+    browser.runtime.sendMessage('hide_iframe')
   });
 
 

@@ -7,7 +7,7 @@ function handleLinkClick() {
     let isInitialized = false;
     const iframe = document.createElement('iframe');
     iframe.src = browser.extension.getURL("views/content-inject/content.html");
-    iframe.className = 'css-isolation-popup';
+    iframe.className = 'lnbits-css-isolation-popup';
     iframe.frameBorder = 0;
     iframe.style.display = 'none';
 
@@ -47,7 +47,7 @@ function handleLinkClick() {
 
     browser.runtime.onMessage.addListener(function (message) {
         console.log("################# content script received:", message)
-        if (iframe && message == 'hide_popup') {
+        if (iframe && message == 'hide_iframe') {
             iframe.style.display = 'none';
         }
     });

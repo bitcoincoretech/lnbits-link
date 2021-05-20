@@ -148,7 +148,7 @@ export default {
     },
     closeDialog() {
       console.log('############################ closeDialog pay invoices')
-      this.$browser.runtime.sendMessage('hide_popup')
+      this.$browser.runtime.sendMessage('hide_iframe')
     },
   },
   mounted: function () {

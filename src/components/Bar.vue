@@ -33,7 +33,7 @@ export default {
   methods: {
     closeDialog() {
       console.log('############################ closeDialog')
-      this.$browser.runtime.sendMessage('hide_popup');
+      this.$browser.runtime.sendMessage('hide_iframe');
       this.showDialog = true
     },
   },
