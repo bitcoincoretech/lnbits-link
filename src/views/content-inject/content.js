@@ -19,7 +19,7 @@ try {
     routes
   })
   //find better default
-  router.replace('/bar')
+  router.replace('/loading')
 
   new Vue({
     el: '#content',
