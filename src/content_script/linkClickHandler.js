@@ -23,21 +23,18 @@ function handleLinkClick() {
         if (!isBolt11Link && !isLnUrlLink) {
             return
         }
+        console.log("###### link.href", link.href)
 
         if (!isInitialized) {
             isInitialized = true;
             document.body.appendChild(iframe);
         }
-
-        if (isLnUrlLink) {
-            console.log("###### LNURL")
-        } else if (isBolt11Link) {
-            console.log("###### BOLT11")
-        }
         iframe.style.display = null;
 
         setTimeout(() => {
-            iframe.contentWindow.postMessage('xxxxxx', '*');
+            iframe.contentWindow.postMessage({
+                invoice: link.href
+            }, '*');
             console.log("#### iframe.contentWindow.postMessage")
         })
 

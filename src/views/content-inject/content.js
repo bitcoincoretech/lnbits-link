@@ -26,7 +26,10 @@ new Vue({
 window.addEventListener("message", (e) => {
   console.log('############### iframe addEventListener', e);
   const data = e.data;
-  if (router.currentRoute.path !== '/payment') {
+  if (router.currentRoute.path === '/payment') {
+    router.replace('/foo')
+  }
+  setTimeout(() => {
     router.replace({
       path: '/payment',
       query: {
@@ -34,7 +37,8 @@ window.addEventListener("message", (e) => {
         requestedBy: e.origin
       }
     })
-  }
+  })
+
 
 }, false);
 
