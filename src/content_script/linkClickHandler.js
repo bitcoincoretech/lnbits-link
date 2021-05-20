@@ -28,15 +28,12 @@ function handleLinkClick() {
         if (!isInitialized) {
             isInitialized = true;
             document.body.appendChild(iframe);
-            iframe.addEventListener("load", function (e) {
-                // can send post after this
-                console.log("######  content_script > iframe.addEventListener postMessage", e);
+            iframe.addEventListener("load", function () {
                 iframe.contentWindow.postMessage({
                     paymentRequest: link.href
                 }, '*');
             });
         } else {
-            console.log("######  content_script > is initialized postMessage");
             iframe.contentWindow.postMessage({
                 paymentRequest: link.href
             }, '*');
