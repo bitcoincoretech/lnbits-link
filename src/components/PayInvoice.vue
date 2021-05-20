@@ -10,6 +10,11 @@
           <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
           <strong>Hash:</strong> {{ parse.invoice.hash }}
         </p>
+        <qrcode
+            :value="paymentRequest"
+            :options="{width: 340}"
+            class="rounded-borders"
+          ></qrcode>
         <div v-if="canPay" class="row q-mt-lg">
           <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>

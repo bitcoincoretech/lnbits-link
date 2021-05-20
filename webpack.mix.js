@@ -14,7 +14,8 @@ mix
         jquery$: 'jquery/dist/jquery.js',
         lodash$: 'lodash/index.js',
         bolt11$: '@ln-zap/bolt11/payreq.js',
-        stream$: 'readable-stream/readable.js'
+        stream$: 'readable-stream/readable.js',
+        vueQrcode$: 'vue-qrcode/lib/esm.js'
       },
     },
   })
@@ -22,7 +23,7 @@ mix
   .copyDirectory('src/assets/img', 'dist/img')
   .copyDirectory('src/assets/fonts', 'dist/fonts')
   .copyDirectory('src/assets/css', 'dist/css')
-  .sass('src/assets/scss/base.scss', 'dist/css/base.css')  // TODO: move all in assets folder
+  .sass('src/assets/scss/base.scss', 'dist/css/base.css') // TODO: move all in assets folder
   .copy('node_modules/quasar/dist/quasar.css', 'dist/css/quasar.css')
 
   .copy('src/views/popup/popup.html', 'dist/views/popup/')
@@ -38,6 +39,5 @@ mix
 
   .js('src/content_script/index.js', 'dist/content_script/index.js')
   .js('src/background_script/index.js', 'dist/background_script/index.js')
-  
+
   .vue()
- 
