@@ -3,7 +3,7 @@ const mix = require('laravel-mix')
 mix
   .webpackConfig({
     node: {
-      global: false,
+      global: true,
     },
     resolve: {
       alias: {
@@ -12,6 +12,9 @@ mix
         quasar$: 'quasar/dist/quasar.esm.js',
         axios$: 'axios/index.js',
         jquery$: 'jquery/dist/jquery.js',
+        lodash$: 'lodash/index.js',
+        bolt11$: '@ln-zap/bolt11/payreq.js',
+        stream$: 'readable-stream/readable.js'
       },
     },
   })
