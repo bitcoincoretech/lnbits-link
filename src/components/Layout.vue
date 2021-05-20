@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog">
+  <q-dialog ref="dialog" v-model="showDialog">
     <q-card style="width: 700px; max-width: 80vw">
       <q-card-section>
         <q-input
@@ -34,6 +34,7 @@ export default {
   data() {
     console.log('############## bolt11Invoice', this.bolt11Invoice)
     return {
+      showDialog: true,
       layout: false,
 
       moreContent: true,

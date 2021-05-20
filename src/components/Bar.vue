@@ -1,21 +1,35 @@
 <template>
-  <q-card style="width: 700px; max-width: 80vw">
-    <q-card-section>
-      <q-input
-        filled
-        dense
-        type="textarea"
-        label="Paste an invoice, payment request or lnurl code *"
-      >
-      </q-input>
-      <div class="q-mt-lg">
-        <q-btn unelevated color="deep-purple" type="submit">Read</q-btn>
-        <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+  <q-dialog ref="dialog" v-model="showDialog">
+    <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
+      <div>
+        <q-form class="q-gutter-md">
+          <q-input
+            filled
+            dense
+            type="textarea"
+            label="Paste an invoice, payment request or lnurl code *"
+          >
+          </q-input>
+          <div class="row q-mt-lg">
+            <q-btn unelevated color="deep-purple" type="submit">Read</q-btn>
+            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+          </div>
+        </q-form>
       </div>
-    </q-card-section>
-
-    <q-card-actions align="right" class="bg-white text-teal">
-      <q-btn flat label="OK" v-close-popup />
-    </q-card-actions>
-  </q-card>
+    </q-card>
+  </q-dialog>
 </template>
+
+<script>
+export default {
+  name: 'Bar',
+  props: ['bolt11Invoice'],
+  data() {
+    console.log('############## bolt11Invoice', this.bolt11Invoice)
+    return {
+      showDialog: true,
+    }
+  },
+  methods: {},
+}
+</script>

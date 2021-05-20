@@ -22,7 +22,9 @@ new Vue({
   render: (h) => h(Options),
 })
 
-// remove any quasar injected classes
+
 setTimeout(() => {
-  document.body.className = '';
+  // remove any quasar injected background color
+  document.body.style.background = 'none';
 })
+
