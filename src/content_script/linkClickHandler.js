@@ -33,7 +33,7 @@ function handleLinkClick() {
 
         setTimeout(() => {
             iframe.contentWindow.postMessage({
-                invoice: link.href
+                paymentRequest: link.href
             }, '*');
             console.log("#### iframe.contentWindow.postMessage")
         })

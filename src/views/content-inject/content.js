@@ -33,7 +33,7 @@ window.addEventListener("message", (e) => {
     router.replace({
       path: '/payment',
       query: {
-        invoice: data.invoice,
+        paymentRequest: data.paymentRequest,
         requestedBy: e.origin
       }
     })

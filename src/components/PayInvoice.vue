@@ -1,6 +1,10 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
-    <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card"> PAY INVOICE </q-card>
+    <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
+      <p class="text-wrap">
+        <strong>Payment Request:</strong> {{ paymentRequest }}<br />
+      </p>
+    </q-card>
   </q-dialog>
 </template>
 
@@ -11,7 +15,7 @@ export default {
   data() {
     return {
       showDialog: true,
-      invoice
+      paymentRequest: '',
     }
   },
   methods: {
@@ -22,7 +26,7 @@ export default {
   },
   mounted: function () {
     this.showDialog = true
-    this.invoiceStr = this.$route.query.invoiceStr || ''
+    this.paymentRequest = this.$route.query.paymentRequest || ''
     console.log('############################# mounted: this.$route.query', this.$route.query)
   },
 }
