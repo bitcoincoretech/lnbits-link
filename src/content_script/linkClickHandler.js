@@ -8,7 +8,6 @@ function handleLinkClick() {
     const iframe = document.createElement('iframe');
     iframe.src = browser.extension.getURL("views/content-inject/content.html");
     iframe.className = 'lnbits-css-isolation-popup';
-    iframe.frameBorder = 0;
     iframe.style.display = 'none';
 
     document.addEventListener('click', function (e) {
