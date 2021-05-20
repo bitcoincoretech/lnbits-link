@@ -10,11 +10,10 @@
           <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
           <strong>Hash:</strong> {{ parse.invoice.hash }}
         </p>
-        <qrcode
-            :value="paymentRequest"
-            :options="{width: 340}"
-            class="rounded-borders"
-          ></qrcode>
+        <q-expansion-item group="extras" icon="crop_free" label="QR Code">
+          <qrcode :value="paymentRequest" class="rounded-borders"></qrcode>
+        </q-expansion-item>
+
         <div v-if="canPay" class="row q-mt-lg">
           <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
@@ -132,7 +131,7 @@ export default {
         sat: invoice.millisatoshis / 1000,
         fsat: invoice.millisatoshis / 1000,
         // fsat: LNbits.utils.formatSat(invoice.millisatoshis / 1000),
-        expireDate: invoice.timeExpireDateString
+        expireDate: invoice.timeExpireDateString,
       }
 
       _.each(invoice.tags, (tag) => {
