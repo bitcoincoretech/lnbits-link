@@ -131,7 +131,6 @@ export default {
       }
 
       _.each(invoice.tags, (tag) => {
-        console.log('################## tag', tag)
         if (_.isObject(tag) && _.has(tag, 'tagName')) {
           if (tag.tagName === 'payment_hash') {
             cleanInvoice.hash = tag.data
@@ -157,11 +156,6 @@ export default {
     this.showDialog = true
     this.paymentRequest = this.$route.query.paymentRequest || ''
     this.parse.data.request = this.$route.query.paymentRequest || ''
-
-    console.log(
-      '############################# mounted: this.$route.query',
-      this.$route.query.paymentRequest
-    )
     this.decodeRequest()
   },
 }

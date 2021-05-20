@@ -23,20 +23,26 @@ function handleLinkClick() {
         if (!isBolt11Link && !isLnUrlLink) {
             return
         }
-        console.log("###### link.href", link.href)
+        console.log("######  content_script > link.href", link.href)
 
         if (!isInitialized) {
             isInitialized = true;
             document.body.appendChild(iframe);
-        }
-        iframe.style.display = null;
-
-        setTimeout(() => {
+            iframe.addEventListener("load", function (e) {
+                // can send post after this
+                console.log("######  content_script > iframe.addEventListener postMessage", e);
+                iframe.contentWindow.postMessage({
+                    paymentRequest: link.href
+                }, '*');
+            });
+        } else {
+            console.log("######  content_script > is initialized postMessage");
             iframe.contentWindow.postMessage({
                 paymentRequest: link.href
             }, '*');
-            console.log("#### iframe.contentWindow.postMessage")
-        })
+        }
+        iframe.style.display = null;
+
 
 
     }, false);
