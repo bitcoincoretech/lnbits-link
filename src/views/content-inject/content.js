@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill'
 import Vue from 'vue'
 import VueRouter from 'vuerouter'
 import Quasar from 'quasar'
@@ -24,7 +25,6 @@ new Vue({
 
 
 window.addEventListener("message", (e) => {
-  console.log('############### iframe addEventListener', e);
   const data = e.data;
   if (router.currentRoute.path === '/payment') {
     router.replace('/foo')
@@ -38,9 +38,12 @@ window.addEventListener("message", (e) => {
       }
     })
   })
-
-
 }, false);
+
+document.getElementById('lnbits-overlay')
+  .addEventListener('click', function () {
+    browser.runtime.sendMessage('hide_popup')
+  });
 
 
 setTimeout(() => {

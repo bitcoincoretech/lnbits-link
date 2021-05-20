@@ -8,6 +8,16 @@
     <link href="../../css/quasar.css" rel="stylesheet">
 
     <style>
+        .lnbits-overlay {
+            position: fixed;
+            top: 0%;
+            left: 0%;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            opacity: 0;
+        }
+
         .lnbits-wrapper {
             z-index: 1010;
         }
@@ -15,6 +25,7 @@
 </head>
 
 <body>
+    <div id="lnbits-overlay" class='lnbits-overlay'></div>
     <div class='lnbits-wrapper'>
         <div id="content">
         </div>
