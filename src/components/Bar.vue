@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" v-model="showDialog">
+  <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
       <div>
         <q-form class="q-gutter-md">
@@ -30,6 +30,11 @@ export default {
       showDialog: true,
     }
   },
-  methods: {},
+  methods: {
+    closeDialog() {
+      console.log('############################ closeDialog')
+      this.$browser.runtime.sendMessage('hide_popup');
+    },
+  },
 }
 </script>

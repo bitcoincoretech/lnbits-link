@@ -34,6 +34,7 @@ mix
   .js('src/views/content-inject/content.js', 'dist/views/content-inject/')
 
   .js('src/content_script/index.js', 'dist/content_script/index.js')
+  .js('src/background_script/index.js', 'dist/background_script/index.js')
   
   .vue()
  

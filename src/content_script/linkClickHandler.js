@@ -40,6 +40,13 @@ function handleLinkClick() {
     function _init() {
         document.body.appendChild(iframe);
     }
+
+    browser.runtime.onMessage.addListener(function (message) {
+        console.log("################# content script received:", message)
+        if (iframe && message == 'hide_popup') {
+            iframe.style.display = 'none';
+        }
+    });
 }
 
 export default handleLinkClick;

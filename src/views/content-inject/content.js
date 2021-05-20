@@ -22,7 +22,6 @@ new Vue({
   render: (h) => h(Options),
 })
 
-
 setTimeout(() => {
   // remove any quasar injected background color
   document.body.style.background = 'none';

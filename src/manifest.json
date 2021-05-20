@@ -30,6 +30,9 @@
     "page": "views/options/options.html",
     "open_in_tab": true
   },
+  "background" : {
+    "scripts" : ["background_script/index.js"]
+  },
   "content_scripts": [
     {
       "matches": [
@@ -41,7 +44,7 @@
         "content_script/index.js"
       ],
       "css": ["css/app.css"],
-      "run_at": "document_idle",
+      "run_at": "document_start",
       "all_frames": true
     }
   ],

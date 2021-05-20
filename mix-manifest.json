@@ -3,6 +3,7 @@
     "/dist/views/options/options.js": "/dist/views/options/options.js",
     "/dist/views/content-inject/content.js": "/dist/views/content-inject/content.js",
     "/dist/content_script/index.js": "/dist/content_script/index.js",
+    "/dist/background_script/index.js": "/dist/background_script/index.js",
     "/dist/css/base.css": "/dist/css/base.css",
     "/dist/manifest.json": "/dist/manifest.json",
     "/dist/img/favicon-128.png": "/dist/img/favicon-128.png",
