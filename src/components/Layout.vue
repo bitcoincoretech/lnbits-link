@@ -1,22 +1,22 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
-    <q-card class="q-dialog-plugin">
-      <q-card>
-        <q-card-section>
-          <h3 class="q-my-none"><strong>LN</strong>bits</h3>
-          <h5 class="q-my-md">Free and open-source lightning wallet</h5>
-        </q-card-section>
-      </q-card>
+  <q-dialog ref="dialog">
+    <q-card style="width: 700px; max-width: 80vw">
+      <q-card-section>
+        <q-input
+          filled
+          dense
+          type="textarea"
+          label="Paste an invoice, payment request or lnurl code *"
+        >
+        </q-input>
+        <div class="q-mt-lg">
+          <q-btn unelevated color="deep-purple" type="submit">Read</q-btn>
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+      </q-card-section>
 
-      <!-- buttons example -->
-      <q-card-actions>
-        <q-btn color="primary" label="OK" @click="onOKClick" />
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
-        <!-- <div class="row q-mt-lg">
-          <q-btn color="deep-purple" unelevated>Connect</q-btn>
-          <q-space />
-          <q-btn color="purple" unelevated>New User</q-btn>
-        </div> -->
+      <q-card-actions align="right" class="bg-white text-teal">
+        <q-btn flat label="OK" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -25,8 +25,14 @@
 <script>
 export default {
   name: 'Layout',
-
+  props: ['bolt11Invoice'],
+  computed: {
+    contentSize() {
+      return this.moreContent ? 150 : 5
+    },
+  },
   data() {
+    console.log('############## bolt11Invoice', this.bolt11Invoice)
     return {
       layout: false,
 

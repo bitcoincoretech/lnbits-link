@@ -40,9 +40,10 @@
       "js": [
         "content_script/index.js"
       ],
-      "css": ["css/quasar.css"],
-      "run_at": "document_start",
+      "css": ["css/app.css"],
+      "run_at": "document_idle",
       "all_frames": true
     }
-  ]
+  ],
+  "web_accessible_resources" : ["views/content-inject/content.html"]
 }

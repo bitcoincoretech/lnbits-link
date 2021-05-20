@@ -1,17 +1,15 @@
-import Vue from 'vue'
-import Quasar from 'quasar'
-import {
-    Dialog
-} from 'quasar'
-
-import Layout from '../components/Layout'
-
+import browser from 'webextension-polyfill'
 
 const BOLT11_PREFIX = 'lightning:'
 const LNURL_PREFIX = BOLT11_PREFIX + 'LNURL'
 
 function handleLinkClick() {
-    let isVueInitialized = false;
+    let isInitialized = false;
+    const iframe = document.createElement('iframe');
+    iframe.src = browser.extension.getURL("views/content-inject/content.html");
+    iframe.className = 'css-isolation-popup';
+    iframe.frameBorder = 0;
+    iframe.style.display = 'none';
 
     document.addEventListener('click', function (e) {
         const link = e.target.closest('a')
@@ -19,15 +17,15 @@ function handleLinkClick() {
             return
         }
 
-        const isBolt11Link = BOLT11_PREFIX.toUpperCase()  === link.href.substring(0, BOLT11_PREFIX.length).toUpperCase()
+        const isBolt11Link = BOLT11_PREFIX.toUpperCase() === link.href.substring(0, BOLT11_PREFIX.length).toUpperCase()
         const isLnUrlLink = LNURL_PREFIX.toUpperCase() === link.href.substring(0, LNURL_PREFIX.length).toUpperCase()
 
         if (!isBolt11Link && !isLnUrlLink) {
             return
         }
 
-        if (!isVueInitialized) {
-            _initVue()
+        if (!isInitialized) {
+            _init()
         }
 
         if (isLnUrlLink) {
@@ -35,24 +33,12 @@ function handleLinkClick() {
         } else if (isBolt11Link) {
             console.log("###### BOLT11")
         }
-
-        Dialog.create({
-            component: Layout
-        })
+        iframe.style.display = null;
 
     }, false);
 
-    function _initVue() {
-        const div = document.createElement("div")
-        div.id = "lnbits-browser-extension"
-        document.body.insertBefore(div, document.body.firstChild);
-        Vue.use(Quasar)
-        new Vue({
-            el: '#lnbits-browser-extension',
-            render: h => {
-                return '<div></div>'
-            }
-        })
+    function _init() {
+        document.body.appendChild(iframe);
     }
 }
 
