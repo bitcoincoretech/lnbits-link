@@ -30,23 +30,28 @@
     "page": "views/options/options.html",
     "open_in_tab": true
   },
-  "background" : {
-    "scripts" : ["background_script/index.js"]
+  "background": {
+    "scripts": [
+      "background_script/index.js"
+    ]
   },
   "content_scripts": [
     {
       "matches": [
-        "file://*/*",
+        "<all_urls>",
         "http://*/*",
         "https://*/*"
       ],
       "js": [
         "content_script/index.js"
       ],
-      "css": ["css/app.css"],
-      "run_at": "document_start",
-      "all_frames": true
+      "css": [
+        "css/app.css"
+      ],
+      "run_at": "document_start"
     }
   ],
-  "web_accessible_resources" : ["views/content-inject/content.html"]
+  "web_accessible_resources": [
+    "views/content-inject/content.html"
+  ]
 }

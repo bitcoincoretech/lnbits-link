@@ -1,6 +1,6 @@
 import Foo from '../../components/Foo.vue'
 import Bar from '../../components/Bar.vue'
-import Layout from '../../components/Layout.vue'
+import PayInvoice from '../../components/PayInvoice.vue'
 
 const routes = [{
         path: '/foo',
@@ -12,7 +12,7 @@ const routes = [{
     },
     {
         path: '/payment',
-        component: Layout
+        component: PayInvoice
     }
 ]
 

@@ -22,8 +22,24 @@ new Vue({
   render: (h) => h(Options),
 })
 
+
+window.addEventListener("message", (e) => {
+  console.log('############### iframe addEventListener', e);
+  const data = e.data;
+  if (router.currentRoute.path !== '/payment') {
+    router.replace({
+      path: '/payment',
+      query: {
+        invoice: data.invoice,
+        requestedBy: e.origin
+      }
+    })
+  }
+
+}, false);
+
+
 setTimeout(() => {
   // remove any quasar injected background color
   document.body.style.background = 'none';
 })
-

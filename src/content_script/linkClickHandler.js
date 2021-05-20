@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill'
 
 const BOLT11_PREFIX = 'lightning:'
-const LNURL_PREFIX = BOLT11_PREFIX + 'LNURL'
+const LNURL_PREFIX = BOLT11_PREFIX + 'LNURL1'
 
 function handleLinkClick() {
     let isInitialized = false;
@@ -25,7 +25,8 @@ function handleLinkClick() {
         }
 
         if (!isInitialized) {
-            _init()
+            isInitialized = true;
+            document.body.appendChild(iframe);
         }
 
         if (isLnUrlLink) {
@@ -35,11 +36,14 @@ function handleLinkClick() {
         }
         iframe.style.display = null;
 
+        setTimeout(() => {
+            iframe.contentWindow.postMessage('xxxxxx', '*');
+            console.log("#### iframe.contentWindow.postMessage")
+        })
+
+
     }, false);
 
-    function _init() {
-        document.body.appendChild(iframe);
-    }
 
     browser.runtime.onMessage.addListener(function (message) {
         console.log("################# content script received:", message)

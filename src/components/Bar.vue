@@ -34,6 +34,7 @@ export default {
     closeDialog() {
       console.log('############################ closeDialog')
       this.$browser.runtime.sendMessage('hide_popup');
+      this.showDialog = true
     },
   },
 }
