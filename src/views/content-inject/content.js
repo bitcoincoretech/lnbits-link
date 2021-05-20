@@ -12,15 +12,13 @@ try {
   Vue.prototype.$browser = require('webextension-polyfill')
   Vue.use(VueRouter)
   Vue.use(Quasar)
-
-  console.log('###### VueQrcode', VueQrcode)
-  Vue.use(VueQrcode)
   Vue.component('qrcode', VueQrcode)
  
 
   const router = new VueRouter({
     routes
   })
+  //find better default
   router.replace('/bar')
 
   new Vue({

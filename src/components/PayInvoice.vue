@@ -1,7 +1,6 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <!-- <p class="text-wrap"><strong>Payment Request:</strong> {{ paymentRequest }}<br /></p> -->
       <div v-if="parse.invoice">
         <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
         <q-separator class="q-my-sm"></q-separator>
@@ -11,6 +10,7 @@
           <strong>Hash:</strong> {{ parse.invoice.hash }}
         </p>
         <q-expansion-item group="extras" icon="crop_free" label="QR Code">
+          <!-- TODO: might be the cause for flickering of the dialog -->
           <qrcode :value="paymentRequest" class="rounded-borders"></qrcode>
         </q-expansion-item>
 
