@@ -280,7 +280,81 @@ export default {
       }
     },
     payLnurl: async function () {
-      console.log('######### payLnurl')
+      let dismissPaymentMsg = this.$q.notify({
+        timeout: 0,
+        message: 'Processing payment...',
+      })
+
+      try {
+        const response = await lnbitsApi(this.serverUrl).payLnurl(
+          this.activeWallet,
+          this.parse.lnurlpay.callback,
+          this.parse.lnurlpay.description_hash,
+          this.parse.data.amount * 1000,
+          this.parse.lnurlpay.description.slice(0, 120),
+          this.parse.data.comment
+        )
+
+        clearInterval(this.parse.paymentChecker)
+        setTimeout(() => {
+          clearInterval(this.parse.paymentChecker)
+        }, 40000)
+        this.parse.paymentChecker = setInterval(async () => {
+          const res = await lnbitsApi(this.serverUrl).getPayment(
+            this.activeWallet,
+            response.data.payment_hash
+          )
+          if (res.data.paid) {
+            dismissPaymentMsg()
+            clearInterval(this.parse.paymentChecker)
+
+            // show lnurlpay success action
+            if (response.data.success_action) {
+              switch (response.data.success_action.tag) {
+                case 'url':
+                  this.$q.notify({
+                    message: `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`,
+                    caption: response.data.success_action.description,
+                    html: true,
+                    type: 'positive',
+                    timeout: 0,
+                    closeBtn: true,
+                  })
+                  break
+                case 'message':
+                  this.$q.notify({
+                    message: response.data.success_action.message,
+                    type: 'positive',
+                    timeout: 0,
+                    closeBtn: true,
+                  })
+                  break
+                case 'aes':
+                  console.log("#!!!!!!!!!!!!!!!!!!! AES")
+                  // LNbits.api
+                  //   .getPayment(this.g.wallet, response.data.payment_hash)
+                  //   .then(({ data: payment }) =>
+                  //     decryptLnurlPayAES(response.data.success_action, payment.preimage)
+                  //   )
+                  //   .then((value) => {
+                  //     this.$q.notify({
+                  //       message: value,
+                  //       caption: response.data.success_action.description,
+                  //       html: true,
+                  //       type: 'positive',
+                  //       timeout: 0,
+                  //       closeBtn: true,
+                  //     })
+                  //   })
+                  break
+              }
+            }
+          }
+        }, 2000)
+      } catch (err) {
+        dismissPaymentMsg()
+        uiUtils.notifyApiError(err)
+      }
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
