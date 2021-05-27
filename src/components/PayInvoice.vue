@@ -29,32 +29,6 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
-      <!-- <div v-else-if="parse.lnurlauth">
-        {% raw %}
-        <q-form @submit="authLnurl" class="q-gutter-md">
-          <p class="q-my-none text-h6">
-            Authenticate with <b>{{ parse.lnurlauth.domain }}</b
-            >?
-          </p>
-          <q-separator class="q-my-sm"></q-separator>
-          <p>
-            For every website and for every LNbits wallet, a new keypair will be deterministically
-            generated so your identity can't be tied to your LNbits wallet or linked across
-            websites. No other data will be shared with {{ parse.lnurlauth.domain }}.
-          </p>
-          <p>
-            Your public key for <b>{{ parse.lnurlauth.domain }}</b> is:
-          </p>
-          <p class="q-mx-xl">
-            <code class="text-wrap"> {{ parse.lnurlauth.pubkey }} </code>
-          </p>
-          <div class="row q-mt-lg">
-            <q-btn unelevated color="deep-purple" type="submit">Login</q-btn>
-            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-          </div>
-        </q-form>
-        {% endraw %}
-      </div> -->
       <div v-else-if="parse.lnurlpay">
         <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
           <b>{{ parse.lnurlpay.domain }}</b> is requesting
@@ -111,6 +85,9 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
+      <div v-else>
+        <h5>Cannot read request!</h5>
+      </div>
     </q-card>
   </q-dialog>
 </template>
@@ -138,6 +115,18 @@ export default {
           comment: '',
         },
         paymentChecker: null,
+      },
+      receive: {
+        show: false,
+        status: 'pending',
+        paymentReq: null,
+        paymentHash: null,
+        minMax: [0, 2100000000000000],
+        lnurl: null,
+        data: {
+          amount: null,
+          memo: '',
+        },
       },
       balance: 0,
       requestedBy: '',
@@ -194,10 +183,9 @@ export default {
           if (data.kind === 'pay') {
             this.parse.lnurlpay = Object.freeze(data)
             this.parse.data.amount = data.minSendable / 1000
-          } else if (data.kind === 'auth') {
-            this.parse.lnurlauth = Object.freeze(data)
+            // } else if (data.kind === 'auth') {
+            //   this.parse.lnurlauth = Object.freeze(data)
           } else if (data.kind === 'withdraw') {
-            this.parse.show = false
             this.receive.show = true
             this.receive.status = 'pending'
             this.receive.paymentReq = null
