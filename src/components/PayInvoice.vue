@@ -30,11 +30,14 @@
 <script>
 import bolt11 from 'bolt11'
 import _ from 'lodash'
+import lnbitsApi from '../services/lnbits-api.svc'
 
 export default {
   name: 'payInvoice',
   data() {
     return {
+      activeWallet: {},
+      serverUrl: '',
       showDialog: true,
       parse: {
         show: false,
@@ -150,17 +153,34 @@ export default {
 
       this.parse.invoice = Object.freeze(cleanInvoice)
     },
+    fetchBalance: async function () {
+      // TODO: handle http status >=400
+      const response = await lnbitsApi(this.serverUrl).getWallet(this.activeWallet)
+      this.balance = Math.round(response.data.balance / 1000)
+    },
+    payInvoice: function () {
+      console.log('payInvoice')
+    },
     closeDialog() {
       console.log('############################ closeDialog pay invoices')
       this.$browser.runtime.sendMessage('hide_iframe')
     },
   },
-  mounted: function () {
+  mounted: async function () {
     console.log('############################ mounted')
     this.showDialog = true
     this.parse.data.request = this.$route.query.paymentRequest || ''
     this.requestedBy = this.$route.query.requestedBy || ''
+
+    const result = await this.$browser.storage.sync.get({ serverUrl: '' })
+    this.serverUrl = result.serverUrl
+
+    const result1 = await this.$browser.storage.sync.get({
+      user: '',
+    })
+    this.activeWallet = result1.user.wallets[0]
     this.decodeRequest()
+    this.fetchBalance()
   },
 }
 </script>

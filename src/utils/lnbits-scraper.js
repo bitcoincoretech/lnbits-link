@@ -56,8 +56,8 @@ function _extractUserFromScripts(scripts = []) {
             id: wallet[0],
             name: wallet[1],
             balance: wallet[5],
-            adminKey: wallet[3],
-            invoiceKey: wallet[4],
+            adminkey: wallet[3],
+            inkey: wallet[4],
         }))
         return {
             id: u[0],
