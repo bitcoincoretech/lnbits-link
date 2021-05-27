@@ -280,7 +280,7 @@ export default {
       }
     },
     payLnurl: async function () {
-      let dismissPaymentMsg = this.$q.notify({
+      const dismissPaymentMsg = this.$q.notify({
         timeout: 0,
         message: 'Processing payment...',
       })
@@ -330,6 +330,9 @@ export default {
                   })
                   break
               }
+              setTimeout(() => {
+                this.closeDialog()
+              }, 4000)
             }
           }
         }, 2000)
