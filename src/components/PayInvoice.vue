@@ -29,6 +29,88 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
+      <!-- <div v-else-if="parse.lnurlauth">
+        {% raw %}
+        <q-form @submit="authLnurl" class="q-gutter-md">
+          <p class="q-my-none text-h6">
+            Authenticate with <b>{{ parse.lnurlauth.domain }}</b
+            >?
+          </p>
+          <q-separator class="q-my-sm"></q-separator>
+          <p>
+            For every website and for every LNbits wallet, a new keypair will be deterministically
+            generated so your identity can't be tied to your LNbits wallet or linked across
+            websites. No other data will be shared with {{ parse.lnurlauth.domain }}.
+          </p>
+          <p>
+            Your public key for <b>{{ parse.lnurlauth.domain }}</b> is:
+          </p>
+          <p class="q-mx-xl">
+            <code class="text-wrap"> {{ parse.lnurlauth.pubkey }} </code>
+          </p>
+          <div class="row q-mt-lg">
+            <q-btn unelevated color="deep-purple" type="submit">Login</q-btn>
+            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+          </div>
+        </q-form>
+        {% endraw %}
+      </div> -->
+      <div v-else-if="parse.lnurlpay">
+        <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
+          <b>{{ parse.lnurlpay.domain }}</b> is requesting
+          {{ parse.lnurlpay.maxSendable | msatoshiFormat }} sat
+          <span v-if="parse.lnurlpay.commentAllowed > 0">
+            <br />
+            and a {{ parse.lnurlpay.commentAllowed }}-char comment
+          </span>
+        </p>
+        <p v-else class="q-my-none text-h6 text-center">
+          <b>{{ parse.lnurlpay.domain }}</b> is requesting <br />
+          between <b>{{ parse.lnurlpay.minSendable | msatoshiFormat }}</b> and
+          <b>{{ parse.lnurlpay.maxSendable | msatoshiFormat }}</b> sat
+          <span v-if="parse.lnurlpay.commentAllowed > 0">
+            <br />
+            and a {{ parse.lnurlpay.commentAllowed }}-char comment
+          </span>
+        </p>
+        <q-separator class="q-my-sm"></q-separator>
+        <div class="row">
+          <p class="col text-justify text-italic">
+            {{ parse.lnurlpay.description }}
+          </p>
+          <p class="col-4 q-pl-md" v-if="parse.lnurlpay.image">
+            <q-img :src="parse.lnurlpay.image" />
+          </p>
+        </div>
+        <div class="row">
+          <div class="col">
+            <q-input
+              filled
+              dense
+              v-model.number="parse.data.amount"
+              type="number"
+              label="Amount (sat) *"
+              :min="parse.lnurlpay.minSendable / 1000"
+              :max="parse.lnurlpay.maxSendable / 1000"
+              :readonly="parse.lnurlpay.fixed"
+            ></q-input>
+          </div>
+          <div class="col-8 q-pl-md" v-if="parse.lnurlpay.commentAllowed > 0">
+            <q-input
+              filled
+              dense
+              v-model="parse.data.comment"
+              :type="parse.lnurlpay.commentAllowed > 64 ? 'textarea' : 'text'"
+              label="Comment (optional)"
+              :maxlength="parse.lnurlpay.commentAllowed"
+            ></q-input>
+          </div>
+        </div>
+        <div class="row q-mt-lg">
+          <q-btn unelevated color="deep-purple" @click="payLnurl">Send satoshis</q-btn>
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+      </div>
     </q-card>
   </q-dialog>
 </template>
@@ -74,58 +156,66 @@ export default {
       return false
     },
   },
+  filters: {
+    msatoshiFormat: function (value) {
+      return uiUtils.formatSat(value / 1000)
+    },
+  },
   methods: {
-    decodeRequest: function () {
-      if (this.parse.data.request.startsWith('lightning:')) {
+    decodeRequest: async function () {
+      const paymentRequest = (this.parse.data.request || '').toLowerCase()
+      if (paymentRequest.startsWith('lightning:')) {
         this.parse.data.request = this.parse.data.request.slice(10)
-      } else if (this.parse.data.request.startsWith('lnurl:')) {
+      } else if (paymentRequest.startsWith('lnurl:')) {
         this.parse.data.request = this.parse.data.request.slice(6)
-      } else if (this.parse.data.request.indexOf('lightning=lnurl1') !== -1) {
+      } else if (paymentRequest.indexOf('lightning=lnurl1') !== -1) {
         this.parse.data.request = this.parse.data.request.split('lightning=')[1].split('&')[0]
       }
 
-      // if (this.parse.data.request.toLowerCase().startsWith('lnurl1')) {
-      //   LNbits.api
-      //     .request('GET', '/api/v1/lnurlscan/' + this.parse.data.request, this.g.wallet.adminkey)
-      //     .catch((err) => {
-      //       LNbits.utils.notifyApiError(err)
-      //     })
-      //     .then((response) => {
-      //       let data = response.data
+      if (this.parse.data.request.toLowerCase().startsWith('lnurl1')) {
+        try {
+          const response = await lnbitsApi(this.serverUrl).request(
+            'GET',
+            '/api/v1/lnurlscan/' + this.parse.data.request,
+            this.activeWallet.adminkey
+          )
+          let data = response.data
+          console.log('data', data)
+          if (data.status === 'ERROR') {
+            this.$q.notify({
+              timeout: 5000,
+              type: 'warning',
+              message: `${data.domain} lnurl call failed.`,
+              caption: data.reason,
+            })
+            return
+          }
 
-      //       if (data.status === 'ERROR') {
-      //         this.$q.notify({
-      //           timeout: 5000,
-      //           type: 'warning',
-      //           message: `${data.domain} lnurl call failed.`,
-      //           caption: data.reason,
-      //         })
-      //         return
-      //       }
-
-      //       if (data.kind === 'pay') {
-      //         this.parse.lnurlpay = Object.freeze(data)
-      //         this.parse.data.amount = data.minSendable / 1000
-      //       } else if (data.kind === 'auth') {
-      //         this.parse.lnurlauth = Object.freeze(data)
-      //       } else if (data.kind === 'withdraw') {
-      //         this.parse.show = false
-      //         this.receive.show = true
-      //         this.receive.status = 'pending'
-      //         this.receive.paymentReq = null
-      //         this.receive.paymentHash = null
-      //         this.receive.data.amount = data.maxWithdrawable / 1000
-      //         this.receive.data.memo = data.defaultDescription
-      //         this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
-      //         this.receive.lnurl = {
-      //           domain: data.domain,
-      //           callback: data.callback,
-      //           fixed: data.fixed,
-      //         }
-      //       }
-      //     })
-      //   return
-      // }
+          if (data.kind === 'pay') {
+            this.parse.lnurlpay = Object.freeze(data)
+            this.parse.data.amount = data.minSendable / 1000
+          } else if (data.kind === 'auth') {
+            this.parse.lnurlauth = Object.freeze(data)
+          } else if (data.kind === 'withdraw') {
+            this.parse.show = false
+            this.receive.show = true
+            this.receive.status = 'pending'
+            this.receive.paymentReq = null
+            this.receive.paymentHash = null
+            this.receive.data.amount = data.maxWithdrawable / 1000
+            this.receive.data.memo = data.defaultDescription
+            this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
+            this.receive.lnurl = {
+              domain: data.domain,
+              callback: data.callback,
+              fixed: data.fixed,
+            }
+          }
+        } catch (err) {
+          uiUtils.notifyApiError(err)
+        }
+        return
+      }
 
       let invoice
       try {
@@ -145,7 +235,7 @@ export default {
         msat: invoice.millisatoshis,
         sat: invoice.millisatoshis / 1000,
         fsat: invoice.millisatoshis / 1000,
-        // fsat: LNbits.utils.formatSat(invoice.millisatoshis / 1000),
+        // fsat: LNbits.utils.formatSat(invoice.millisatoshis / 1000), // TODO
         expireDate: invoice.timeExpireDateString,
       }
 
@@ -200,6 +290,9 @@ export default {
         uiUtils.notifyApiError(err)
         dismissPaymentMsg()
       }
+    },
+    payLnurl: async function () {
+      console.log('######### payLnurl')
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
