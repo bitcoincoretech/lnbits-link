@@ -5,13 +5,13 @@
         <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
         <q-separator class="q-my-sm"></q-separator>
         <p class="text-wrap">
+          <strong>Requested By:</strong> {{ requestedBy }}<br />
           <strong>Description:</strong> {{ parse.invoice.description }}<br />
           <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
           <strong>Hash:</strong> {{ parse.invoice.hash }}
         </p>
         <q-expansion-item group="extras" icon="crop_free" label="QR Code">
-          <!-- TODO: might be the cause for flickering of the dialog -->
-          <qrcode :value="paymentRequest" class="rounded-borders"></qrcode>
+          <qrcode :value="parse.data.request" class="rounded-borders"></qrcode>
         </q-expansion-item>
 
         <div v-if="canPay" class="row q-mt-lg">
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       showDialog: true,
-      paymentRequest: '',
       parse: {
         show: false,
         invoice: null,
@@ -49,6 +48,7 @@ export default {
         paymentChecker: null,
       },
       balance: 0,
+      requestedBy: '',
     }
   },
   computed: {
@@ -158,8 +158,8 @@ export default {
   mounted: function () {
     console.log('############################ mounted')
     this.showDialog = true
-    this.paymentRequest = this.$route.query.paymentRequest || ''
     this.parse.data.request = this.$route.query.paymentRequest || ''
+    this.requestedBy = this.$route.query.requestedBy || ''
     this.decodeRequest()
   },
 }
