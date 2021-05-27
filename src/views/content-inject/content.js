@@ -8,12 +8,13 @@ import routes from './routes'
 
 
 try {
+  initIFrame()
   // Mozilla's polyfill
   Vue.prototype.$browser = require('webextension-polyfill')
   Vue.use(VueRouter)
   Vue.use(Quasar)
   Vue.component('qrcode', VueQrcode)
- 
+
 
   const router = new VueRouter({
     routes
@@ -44,6 +45,13 @@ try {
     })
   }, false);
 
+
+} catch (err) {
+  browser.runtime.sendMessage('hide_iframe')
+  console.error(err)
+}
+
+function initIFrame() {
   document.getElementById('lnbits-overlay')
     .addEventListener('click', function () {
       browser.runtime.sendMessage('hide_iframe')
@@ -54,8 +62,4 @@ try {
     // remove any quasar injected background color
     document.body.style.background = 'none';
   })
-} catch (err) {
-  browser.runtime.sendMessage('hide_iframe')
-  console.log("!!!!!!!!!!!!!!!!")
-  console.error(err)
 }
