@@ -329,24 +329,6 @@ export default {
                     closeBtn: true,
                   })
                   break
-                case 'aes':
-                  console.log("#!!!!!!!!!!!!!!!!!!! AES")
-                  // LNbits.api
-                  //   .getPayment(this.g.wallet, response.data.payment_hash)
-                  //   .then(({ data: payment }) =>
-                  //     decryptLnurlPayAES(response.data.success_action, payment.preimage)
-                  //   )
-                  //   .then((value) => {
-                  //     this.$q.notify({
-                  //       message: value,
-                  //       caption: response.data.success_action.description,
-                  //       html: true,
-                  //       type: 'positive',
-                  //       timeout: 0,
-                  //       closeBtn: true,
-                  //     })
-                  //   })
-                  break
               }
             }
           }
