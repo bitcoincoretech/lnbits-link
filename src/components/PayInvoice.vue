@@ -14,7 +14,11 @@
           <qrcode :value="parse.data.request" class="rounded-borders"></qrcode>
         </q-expansion-item>
 
-        <div v-if="canPay" class="row q-mt-lg">
+        <div v-if="!hasAccount" class="row q-mt-lg">
+          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage">No Account Found!</q-btn>
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+        <div v-else-if="canPay" class="row q-mt-lg">
           <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
@@ -58,6 +62,13 @@ export default {
     canPay: function () {
       if (!this.parse.invoice) return false
       return this.parse.invoice.sat <= this.balance
+    },
+    hasAccount: function () {
+      console.log('### activeWallet', this.activeWallet)
+      if (this.serverUrl && this.activeWallet && this.activeWallet.id) {
+        return true
+      }
+      return false
     },
   },
   methods: {
@@ -160,6 +171,9 @@ export default {
     },
     payInvoice: function () {
       console.log('payInvoice')
+    },
+    gotoOptionsPage() {
+      this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
     },
     closeDialog() {
       console.log('############################ closeDialog pay invoices')

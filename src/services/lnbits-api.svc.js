@@ -48,7 +48,6 @@ function lnbitsApi(serverUrl) {
             })
         },
         getWallet: function (wallet) {
-            console.log("################# getWallet()", wallet)
             return this.request('get', '/api/v1/wallet', wallet.inkey)
         },
         getPayments: function (wallet) {

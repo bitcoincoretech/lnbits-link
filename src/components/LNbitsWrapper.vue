@@ -40,6 +40,7 @@
 </template>
 
 <script>
+// TODO: can replace with this.$browser?
 import browser from 'webextension-polyfill'
 export default {
   name: 'lnbits-wrapper',
