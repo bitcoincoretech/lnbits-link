@@ -48,7 +48,6 @@ export default {
       serverUrl: '',
       showDialog: true,
       parse: {
-        show: false,
         invoice: null,
         lnurlpay: null,
         data: {
@@ -77,8 +76,6 @@ export default {
   },
   methods: {
     decodeRequest: function () {
-      this.parse.show = true
-
       if (this.parse.data.request.startsWith('lightning:')) {
         this.parse.data.request = this.parse.data.request.slice(10)
       } else if (this.parse.data.request.startsWith('lnurl:')) {
@@ -140,7 +137,7 @@ export default {
           message: error + '.',
           caption: '400 BAD REQUEST',
         })
-        this.parse.show = false
+
         return
       }
 
@@ -174,7 +171,7 @@ export default {
       this.balance = Math.round(response.data.balance / 1000)
     },
     payInvoice: async function () {
-      let dismissPaymentMsg = this.$q.notify({
+      const dismissPaymentMsg = this.$q.notify({
         timeout: 0,
         message: 'Processing payment...',
       })
@@ -194,9 +191,9 @@ export default {
 
         this.parse.paymentChecker = setInterval(() => {
           if (payResponse.data.paid) {
-            this.parse.show = false
             clearInterval(this.parse.paymentChecker)
             dismissPaymentMsg()
+            this.closeDialog()
           }
         }, 2000)
       } catch (err) {
