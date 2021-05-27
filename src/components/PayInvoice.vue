@@ -15,7 +15,9 @@
         </q-expansion-item>
 
         <div v-if="!hasAccount" class="row q-mt-lg">
-          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage">No Account Found!</q-btn>
+          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage"
+            >No Account Found!</q-btn
+          >
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
         <div v-else-if="canPay" class="row q-mt-lg">
@@ -35,11 +37,13 @@
 import bolt11 from 'bolt11'
 import _ from 'lodash'
 import lnbitsApi from '../services/lnbits-api.svc'
+import uiUtils from '../utils/ui-utils'
 
 export default {
   name: 'payInvoice',
   data() {
     return {
+      // TODO: allow user to switch between wallets
       activeWallet: {},
       serverUrl: '',
       showDialog: true,
@@ -169,8 +173,36 @@ export default {
       const response = await lnbitsApi(this.serverUrl).getWallet(this.activeWallet)
       this.balance = Math.round(response.data.balance / 1000)
     },
-    payInvoice: function () {
-      console.log('payInvoice')
+    payInvoice: async function () {
+      let dismissPaymentMsg = this.$q.notify({
+        timeout: 0,
+        message: 'Processing payment...',
+      })
+      try {
+        const response = await lnbitsApi(this.serverUrl).payInvoice(
+          this.activeWallet,
+          this.parse.data.request
+        )
+        clearInterval(this.parse.paymentChecker)
+        setTimeout(() => {
+          clearInterval(this.parse.paymentChecker)
+        }, 40000)
+        const payResponse = await lnbitsApi(this.serverUrl).getPayment(
+          this.activeWallet,
+          response.data.payment_hash
+        )
+
+        this.parse.paymentChecker = setInterval(() => {
+          if (payResponse.data.paid) {
+            this.parse.show = false
+            clearInterval(this.parse.paymentChecker)
+            dismissPaymentMsg()
+          }
+        }, 2000)
+      } catch (err) {
+        uiUtils.notifyApiError(err)
+        dismissPaymentMsg()
+      }
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
