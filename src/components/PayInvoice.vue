@@ -305,6 +305,7 @@ export default {
             response.data.payment_hash
           )
           if (res.data.paid) {
+            // this.showDialog = false 
             dismissPaymentMsg()
             clearInterval(this.parse.paymentChecker)
 
@@ -330,9 +331,6 @@ export default {
                   })
                   break
               }
-              setTimeout(() => {
-                this.closeDialog()
-              }, 4000)
             }
           }
         }, 2000)
