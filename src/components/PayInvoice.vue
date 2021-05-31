@@ -86,10 +86,15 @@
         </div>
       </div>
       <div v-else-if="showErrorDetais">
-        <q-card-section dark bordered class="bg-red-9">
+        <q-card-section dark bordered class="bg-red-5">
           <div class="text-h6">{{ error.title }}</div>
           <div class="text-subtitle2">{{ error.message }}</div>
         </q-card-section>
+        <q-expansion-item group="extras" class="bg-yellow-2" icon="info" label="Details">
+          <p class="text-wrap">
+            {{ parse.data.request }}
+          </p>
+        </q-expansion-item>
         <div class="row q-mt-lg">
           <q-space />
           <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
