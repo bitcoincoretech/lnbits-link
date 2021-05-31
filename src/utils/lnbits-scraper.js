@@ -4,9 +4,7 @@ import $ from 'jquery'
 async function checkUser(serverUrl, userId) {
     try {
         const res = await axios.get(`${serverUrl}/wallet?usr=${userId}`)
-        // handle 404 not found exception
-        console.log('res:', res)
-        console.log('res.request.responseURL', res.request.responseURL)
+        // TODO: handle 404 not found exception
 
         const div = $(res.data)
         const scripts = []
@@ -24,9 +22,7 @@ async function checkUser(serverUrl, userId) {
 async function newUser(serverUrl) {
     try {
         const res = await axios.get(`${serverUrl}/wallet?nme=Browser%20wallet`)
-        // handle 404 not found exception
-        console.log('res:', res)
-
+        // TODO: handle 404 not found exception
         const div = $(res.data)
         const scripts = []
         div.each(function () {

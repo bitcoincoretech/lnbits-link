@@ -45,7 +45,6 @@ import browser from 'webextension-polyfill'
 export default {
   name: 'lnbits-wrapper',
   async mounted() {
-    console.log('this.$route.query.', this.$route.query)
     const userId = this.$route.query.userId || ''
     const walletId = this.$route.query.walletId || ''
     const result = await this.$browser.storage.sync.get({ serverUrl: '' })

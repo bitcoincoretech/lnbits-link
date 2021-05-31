@@ -7,7 +7,6 @@ export default {
     this.$q.loading.hide()
   },
   mounted: function () {
-    console.log('############################ mounted loading')
     document.body.style.background = 'none'
     this.$q.loading.show()
   },

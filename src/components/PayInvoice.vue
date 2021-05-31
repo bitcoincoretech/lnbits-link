@@ -159,7 +159,6 @@ export default {
       return this.parse.invoice.sat <= this.balance
     },
     hasAccount: function () {
-      console.log('### activeWallet', this.activeWallet)
       if (this.serverUrl && this.activeWallet && this.activeWallet.id) {
         return true
       }
@@ -366,8 +365,6 @@ export default {
       this.$browser.runtime.sendMessage('hide_iframe')
     },
     showErrorCard(err, title = 'Error') {
-      console.log(err)
-      console.log('!!!!!!!!!! err, ', JSON.stringify(err))
       this.currentView = 'error'
       this.error.title = title
       this.error.message = (err.message || err) + '.'

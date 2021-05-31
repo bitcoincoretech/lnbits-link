@@ -22,7 +22,6 @@ function handleLinkClick() {
         if (!isBolt11Link && !isLnUrlLink) {
             return
         }
-        console.log("######  content_script > link.href", link.href)
 
         if (!isInitialized) {
             isInitialized = true;
@@ -45,7 +44,6 @@ function handleLinkClick() {
 
 
     browser.runtime.onMessage.addListener(function (message) {
-        console.log("################# content script received:", message)
         if (iframe && message == 'hide_iframe') {
             iframe.style.display = 'none';
         }

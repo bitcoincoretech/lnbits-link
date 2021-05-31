@@ -32,7 +32,6 @@ export default {
     },
   },
   data() {
-    console.log('############## bolt11Invoice', this.bolt11Invoice)
     return {
       showDialog: true,
       layout: false,

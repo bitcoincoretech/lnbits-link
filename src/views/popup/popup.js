@@ -26,9 +26,6 @@ async function init() {
   })
   const user = result.user
 
-  console.log('serverUrl', serverUrl)
-  console.log('user', user)
-
   if (serverUrl && user && user.id && user.wallets && user.wallets.length) {
 
     router.replace({

@@ -25,14 +25,12 @@ export default {
   name: 'Bar',
   props: ['bolt11Invoice'],
   data() {
-    console.log('############## bolt11Invoice', this.bolt11Invoice)
     return {
       showDialog: true,
     }
   },
   methods: {
     closeDialog() {
-      console.log('############################ closeDialog')
       this.$browser.runtime.sendMessage('hide_iframe');
       this.showDialog = true
     },
