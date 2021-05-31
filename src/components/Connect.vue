@@ -62,23 +62,14 @@
                 </p>
               </q-expansion-item>
 
-              <div class="row q-mt-lg">
-                <q-btn v-if="hasActiveUser" @click="disconnect" color="red-10" unelevated
-                  >Disconnect</q-btn
-                >
-
-                <q-btn
-                  v-if="!hasActiveUser"
-                  @click="connect"
-                  color="deep-purple"
-                  type="submit"
-                  unelevated
-                  >Connect</q-btn
-                >
+              <div v-if="!hasActiveUser" class="row q-mt-lg">
+                <q-btn @click="connect" color="deep-purple" type="submit" unelevated>Connect</q-btn>
                 <q-space />
-                <q-btn v-if="!hasActiveUser" @click="connectNewUser" color="purple" unelevated
-                  >New User</q-btn
-                >
+                <q-btn @click="connectNewUser" color="purple" unelevated>New User</q-btn>
+              </div>
+              <div v-else class="row q-mt-lg">
+                <q-btn @click="disconnect" color="red-10" unelevated>Disconnect</q-btn>
+                <q-space />
                 <q-btn
                   v-if="requestDisconnect"
                   @click="cancelDisconnect"
@@ -86,6 +77,14 @@
                   color="grey"
                   class="q-ml-auto"
                   >Cancel</q-btn
+                >
+                <q-btn
+                  v-if="!requestDisconnect"
+                  @click="connect"
+                  flat
+                  color="grey"
+                  class="q-ml-auto"
+                  >Back</q-btn
                 >
               </div>
             </div>
@@ -194,7 +193,6 @@ export default {
       }
     },
     async connect() {
-      console.log('!!!!!!!! connect')
       try {
         const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
 

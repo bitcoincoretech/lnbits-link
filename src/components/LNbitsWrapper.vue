@@ -56,7 +56,7 @@ export default {
       message: 'Loading...',
       caption: serverUrl,
       position: 'center',
-      timeout: 5000,
+      timeout: 1500,
       spinner: true,
     })
 
