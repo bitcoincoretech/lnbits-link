@@ -29,8 +29,9 @@
             <h5 class="q-my-md">Free and open-source lightning wallet</h5>
           </q-card-section>
           <q-card-section>
-            <q-form @submit="connect" class="q-gutter-md">
+            <div class="q-gutter-md">
               <q-input
+                :disable="hasActiveUser"
                 filled
                 dense
                 v-model.trim="serverUrl"
@@ -38,31 +39,56 @@
                 label="LNbits Server URL *"
               ></q-input>
               <q-input
+                :disable="hasActiveUser"
                 filled
                 dense
                 v-model.trim="userId"
                 type="text"
                 label="User ID (optional)"
               ></q-input>
+              <q-expansion-item
+                v-if="requestDisconnect"
+                v-model="requestDisconnect"
+                group="extras"
+                class="bg-yellow-4"
+                icon="warning"
+                label="Warning"
+              >
+                <p class="text-wrap">
+                  All data related to this user will be removed from the browser extension!
+                </p>
+                <p>
+                  Please make sure to backup the User ID if you have any funds associated with it!
+                </p>
+              </q-expansion-item>
 
               <div class="row q-mt-lg">
+                <q-btn v-if="hasActiveUser" @click="disconnect" color="red-10" unelevated
+                  >Disconnect</q-btn
+                >
+
                 <q-btn
+                  v-if="!hasActiveUser"
+                  @click="connect"
                   color="deep-purple"
-                  :disable="userId == null || serverUrl == null"
                   type="submit"
                   unelevated
                   >Connect</q-btn
                 >
                 <q-space />
-                <q-btn
-                  @click="connectNewUser"
-                  color="purple"
-                  :disable="serverUrl == null"
-                  unelevated
+                <q-btn v-if="!hasActiveUser" @click="connectNewUser" color="purple" unelevated
                   >New User</q-btn
                 >
+                <q-btn
+                  v-if="requestDisconnect"
+                  @click="cancelDisconnect"
+                  flat
+                  color="grey"
+                  class="q-ml-auto"
+                  >Cancel</q-btn
+                >
               </div>
-            </q-form>
+            </div>
           </q-card-section>
         </q-card>
       </q-page>
@@ -98,12 +124,15 @@ export default {
   data() {
     return {
       userId: '',
+      userData: {},
       serverUrl: '',
       error: '',
+      requestDisconnect: false,
     }
   },
   async mounted() {
     this.userId = await this.getUserId()
+    this.userData = await this.getUserData()
     this.serverUrl = await this.getServerUrl()
   },
   watch: {
@@ -126,13 +155,33 @@ export default {
       },
     },
   },
-  computed: {},
+  computed: {
+    hasActiveUser() {
+      console.log('this.userId', this.userId)
+      console.log('this.userData', this.userData)
+      console.log('this.userData.id', this.userData.id)
+      const x = !!((this.userId && this.userId.length) || (this.userData && this.userData.id))
+      console.log('x', x)
+      return !!(this.userData && this.userData.id)
+      // return false
+    },
+  },
   methods: {
     async getUserId() {
       try {
         const result = await this.$browser.storage.sync.get({ userId: '' })
         return result.userId
       } catch (error) {
+        // TODO notify
+        console.error(error)
+      }
+    },
+    async getUserData() {
+      try {
+        const result = await this.$browser.storage.sync.get({ user: '' })
+        return result.user
+      } catch (error) {
+        // TODO notify
         console.error(error)
       }
     },
@@ -145,6 +194,7 @@ export default {
       }
     },
     async connect() {
+      console.log('!!!!!!!! connect')
       try {
         const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
 
@@ -217,8 +267,18 @@ export default {
       }
     },
     async disconnect() {
-      console.log('!!!! disconnect !!!!')
-      // remove user info from storage
+      if (!this.requestDisconnect) {
+        this.requestDisconnect = true
+        return
+      }
+      this.requestDisconnect = false
+      this.userId = ''
+      this.userData = {}
+      await this.$browser.storage.sync.set({ userId: '' })
+      await this.$browser.storage.sync.set({ user: {} })
+    },
+    async cancelDisconnect() {
+      this.requestDisconnect = false
     },
   },
 }
