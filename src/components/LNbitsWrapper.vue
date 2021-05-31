@@ -51,17 +51,21 @@ export default {
     const serverUrl = result.serverUrl
     // TODO: no user/wallet/serverUrl found
 
-    this.$q.notify({
-      type: 'info',
+    const closeLoading = this.$q.notify({
+      type: 'ongoing',
       message: 'Loading...',
       caption: serverUrl,
-      timeout: 1500,
+      position: 'center',
+      timeout: 5000,
       spinner: true,
     })
 
     const iFrame = document.getElementById('lnbits-site')
 
     iFrame.src = `${serverUrl}/wallet?usr=${userId}&wal=${walletId}`
+    iFrame.addEventListener('load', function () {
+      closeLoading()
+    })
   },
   methods: {
     gotoConnectPage() {

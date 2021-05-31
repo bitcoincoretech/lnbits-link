@@ -120,7 +120,7 @@ import lnbitsApi from '../services/lnbits-api.svc'
 import uiUtils from '../utils/ui-utils'
 
 export default {
-  name: 'payInvoice',
+  name: 'pay-invoice',
   data() {
     return {
       // TODO: allow user to switch between wallets

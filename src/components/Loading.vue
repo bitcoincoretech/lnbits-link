@@ -3,6 +3,7 @@
 </template>
 <script>
 export default {
+  name: 'loading',
   beforeDestroy() {
     this.$q.loading.hide()
   },
