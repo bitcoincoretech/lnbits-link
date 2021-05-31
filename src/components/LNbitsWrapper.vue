@@ -15,7 +15,9 @@
           :color="'blue-grey-1'"
           :size="'32px'"
           class="cursor-pointer"
-        ></q-icon>
+        >
+          <q-tooltip> Manage User </q-tooltip>
+        </q-icon>
         <q-space />
         <q-icon
           name="fullscreen"
@@ -24,7 +26,9 @@
           :color="'blue-grey-1'"
           :size="'32px'"
           class="cursor-pointer"
-        ></q-icon>
+        >
+          <q-tooltip> Full Screen </q-tooltip>
+        </q-icon>
         <q-space />
         <q-icon
           name="open_in_new"
@@ -33,7 +37,9 @@
           :color="'blue-grey-1'"
           :size="'32px'"
           class="cursor-pointer"
-        ></q-icon>
+        >
+          <q-tooltip> {{ serverUrl }} </q-tooltip>
+        </q-icon>
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -44,17 +50,32 @@
 import browser from 'webextension-polyfill'
 export default {
   name: 'lnbits-wrapper',
+  data() {
+    return {
+      user: {},
+      serverUrl: '',
+    }
+  },
   async mounted() {
+    const serverResult = await browser.storage.sync.get({
+      serverUrl: '',
+    })
+    this.serverUrl = serverResult.serverUrl
+
+    const result = await browser.storage.sync.get({
+      user: '',
+    })
+    this.user = result.user
+
     const userId = this.$route.query.userId || ''
     const walletId = this.$route.query.walletId || ''
-    const result = await this.$browser.storage.sync.get({ serverUrl: '' })
-    const serverUrl = result.serverUrl
+
     // TODO: no user/wallet/serverUrl found
 
     const closeLoading = this.$q.notify({
       type: 'ongoing',
       message: 'Loading...',
-      caption: serverUrl,
+      caption: this.serverUrl,
       position: 'center',
       timeout: 1500,
       spinner: true,
@@ -62,7 +83,7 @@ export default {
 
     const iFrame = document.getElementById('lnbits-site')
 
-    iFrame.src = `${serverUrl}/wallet?usr=${userId}&wal=${walletId}`
+    iFrame.src = `${this.serverUrl}/wallet?usr=${userId}&wal=${walletId}`
     iFrame.addEventListener('load', function () {
       closeLoading()
     })
@@ -76,16 +97,7 @@ export default {
     },
     async gotoWebSite() {
       try {
-        const serverResult = await browser.storage.sync.get({
-          serverUrl: '',
-        })
-        const serverUrl = serverResult.serverUrl
-
-        const result = await browser.storage.sync.get({
-          user: '',
-        })
-        const user = result.user
-        const url = `${serverUrl}/wallet?usr=${user.id}`
+        const url = `${this.serverUrl}/wallet?usr=${this.user.id}`
         browser.tabs.create({ url })
       } catch (err) {
         console.error(err)

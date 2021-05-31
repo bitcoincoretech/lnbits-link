@@ -27,7 +27,6 @@ async function init() {
   const user = result.user
 
   if (serverUrl && user && user.id && user.wallets && user.wallets.length) {
-
     router.replace({
       path: 'lnbits',
       query: {
