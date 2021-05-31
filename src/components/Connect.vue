@@ -31,7 +31,7 @@
           <q-card-section>
             <div class="q-gutter-md">
               <q-input
-                :disable="hasActiveUser"
+                :readonly="hasActiveUser"
                 filled
                 dense
                 v-model.trim="serverUrl"
@@ -39,12 +39,19 @@
                 label="LNbits Server URL *"
               ></q-input>
               <q-input
-                :disable="hasActiveUser"
+                :readonly="hasActiveUser"
+                :type="showUserId ? 'text' : 'password'"
                 filled
                 dense
                 v-model.trim="userId"
-                type="text"
                 label="User ID (optional)"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showUserId ? 'visibility' : 'visibility_off'"
+                    class="cursor-pointer"
+                    @click="showUserId = !showUserId"
+                  /> </template
               ></q-input>
               <q-expansion-item
                 v-if="requestDisconnect"
@@ -123,6 +130,7 @@ export default {
   data() {
     return {
       userId: '',
+      showUserId: false,
       userData: {},
       serverUrl: '',
       error: '',
@@ -156,13 +164,7 @@ export default {
   },
   computed: {
     hasActiveUser() {
-      console.log('this.userId', this.userId)
-      console.log('this.userData', this.userData)
-      console.log('this.userData.id', this.userData.id)
-      const x = !!((this.userId && this.userId.length) || (this.userData && this.userData.id))
-      console.log('x', x)
       return !!(this.userData && this.userData.id)
-      // return false
     },
   },
   methods: {
