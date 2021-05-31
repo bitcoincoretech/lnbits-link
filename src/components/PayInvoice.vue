@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <div v-if="parse.invoice">
+      <div v-if="showInvoiceDetails">
         <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
         <q-separator class="q-my-sm"></q-separator>
         <p class="text-wrap">
@@ -29,7 +29,7 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
-      <div v-else-if="parse.lnurlpay">
+      <div v-else-if="showLnurlPayDetais">
         <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
           <b>{{ parse.lnurlpay.domain }}</b> is requesting
           {{ parse.lnurlpay.maxSendable | msatoshiFormat }} sat
@@ -85,8 +85,24 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
+      <div v-else-if="showErrorDetais">
+        <q-card-section dark bordered class="bg-red-9">
+          <div class="text-h6">{{ error.title }}</div>
+          <div class="text-subtitle2">{{ error.message }}</div>
+        </q-card-section>
+        <div class="row q-mt-lg">
+          <q-space />
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
+          <q-space />
+        </div>
+      </div>
       <div v-else>
-        <h5>Cannot read request!</h5>
+        <h6>Unexpected error!</h6>
+        <div class="row q-mt-lg">
+          <q-space />
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
+          <q-space />
+        </div>
       </div>
     </q-card>
   </q-dialog>
@@ -106,6 +122,11 @@ export default {
       activeWallet: {},
       serverUrl: '',
       showDialog: true,
+      currentView: '',
+      error: {
+        title: '',
+        message: '',
+      },
       parse: {
         invoice: null,
         lnurlpay: null,
@@ -144,6 +165,15 @@ export default {
       }
       return false
     },
+    showInvoiceDetails: function () {
+      return this.currentView === 'invoice'
+    },
+    showLnurlPayDetais: function () {
+      return this.currentView === 'lnurlpay'
+    },
+    showErrorDetais: function () {
+      return this.currentView === 'error'
+    },
   },
   filters: {
     msatoshiFormat: function (value) {
@@ -169,18 +199,13 @@ export default {
             this.activeWallet.adminkey
           )
           let data = response.data
-          console.log('data', data)
           if (data.status === 'ERROR') {
-            this.$q.notify({
-              timeout: 5000,
-              type: 'warning',
-              message: `${data.domain} lnurl call failed.`,
-              caption: data.reason,
-            })
+            this.showErrorCard(err, 'Cannot decode request!')
             return
           }
 
           if (data.kind === 'pay') {
+            this.currentView = 'lnurlpay'
             this.parse.lnurlpay = Object.freeze(data)
             this.parse.data.amount = data.minSendable / 1000
             // } else if (data.kind === 'auth') {
@@ -200,7 +225,7 @@ export default {
             }
           }
         } catch (err) {
-          uiUtils.notifyApiError(err)
+          this.showErrorCard(err)
         }
         return
       }
@@ -208,14 +233,9 @@ export default {
       let invoice
       try {
         invoice = bolt11.decode(this.parse.data.request)
-      } catch (error) {
-        this.$q.notify({
-          timeout: 3000,
-          type: 'warning',
-          message: error + '.',
-          caption: '400 BAD REQUEST',
-        })
-
+        this.currentView = 'invoice'
+      } catch (err) {
+        this.showErrorCard(err, 'Cannot decode BOLT11 invoice!')
         return
       }
 
@@ -275,7 +295,7 @@ export default {
           }
         }, 2000)
       } catch (err) {
-        uiUtils.notifyApiError(err)
+        this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
         dismissPaymentMsg()
       }
     },
@@ -305,7 +325,7 @@ export default {
             response.data.payment_hash
           )
           if (res.data.paid) {
-            // this.showDialog = false 
+            // this.showDialog = false
             dismissPaymentMsg()
             clearInterval(this.parse.paymentChecker)
 
@@ -335,20 +355,25 @@ export default {
           }
         }, 2000)
       } catch (err) {
+        this.showErrorCard(err, 'Cannot pay LNURL invoice!')
         dismissPaymentMsg()
-        uiUtils.notifyApiError(err)
       }
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
     },
     closeDialog() {
-      console.log('############################ closeDialog pay invoices')
       this.$browser.runtime.sendMessage('hide_iframe')
+    },
+    showErrorCard(err, title = 'Error') {
+      console.log(err)
+      console.log('!!!!!!!!!! err, ', JSON.stringify(err))
+      this.currentView = 'error'
+      this.error.title = title
+      this.error.message = (err.message || err) + '.'
     },
   },
   mounted: async function () {
-    console.log('############################ mounted')
     this.showDialog = true
     this.parse.data.request = this.$route.query.paymentRequest || ''
     this.requestedBy = this.$route.query.requestedBy || ''
