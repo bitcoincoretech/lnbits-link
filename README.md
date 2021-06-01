@@ -13,7 +13,7 @@ This extension does **not** require for the user to configure a Lightning Networ
 
 ## Configuration
 The user must:
- - provide a [LNbits](https://lnbits.org/) server URL (by default it connects to [LNbits](https://lnbits.com/))
+ - provide a [LNbits](https://lnbits.org/) server URL (by default it connects to [lnbits.com](https://lnbits.com/))
  - provide a **User ID** if it has one, or create one on the spot
  - send some funds to the wallet
 
