@@ -44,7 +44,7 @@
                 filled
                 dense
                 v-model.trim="userId"
-                label="User ID (optional)"
+                label="User ID"
               >
                 <template v-slot:append>
                   <q-icon
