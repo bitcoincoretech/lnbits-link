@@ -3,7 +3,7 @@
 
 Light browser extensions for **[LNbits](https://lnbits.org/)** that allows the user to connect to any existing **[LNbits](https://lnbits.org/)** server and make payments in the browser. It supports:
   - [x] BOLT11 invoices
-  - [x] LNURL-Pay
+  - [x] LNURL Pay
 
 This extension does **not** require for the user to configure a Lightning Network node or to manage Payment Channels. 
 The look and feel closely follows the [lnbits.com](https://lnbits.com/)) style.
@@ -31,7 +31,7 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/)) style.
 
 ## Use
  - make sure there are some funds in the wallet
- - visit a site that accepts Lightning Payments (BOLT11 or LNURL-pay)
+ - visit a site that accepts Lightning Payments (BOLT11 or LNURL Pay)
  - click on the link
  - a dialog is open asking for confirmation. Confirm (or not). That is it!
 ![lnbits extension 2c](https://user-images.githubusercontent.com/2951406/120315846-715aaf80-c2e5-11eb-9163-0a7bf3667556.png)
