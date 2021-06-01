@@ -6,6 +6,7 @@ Light browser extensions for **[LNbits](https://lnbits.com/)** that allows the u
   - [x] LNURL-Pay
 
 This extension does **not** require for the user to configure a Lightning Network node or to manage Payment Channels.
+
 **Motivation**:
   - for a **non-technical** user it is *difficult* to configure and manage a LN node
   - for a **technical user** it is *easy* to add a LNbits server next to the LN node
