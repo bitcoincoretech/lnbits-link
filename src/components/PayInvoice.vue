@@ -85,6 +85,20 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
+      <div v-else-if="showPaymentStatus">
+        <q-card-section dark bordered>
+          <p class="text-center">
+            <q-spinner-bars color="purple" size="5.5em" />
+          </p>
+          <p class="q-my-none text-h6 text-center">Processing payment....</p>
+        </q-card-section>
+
+        <div class="row q-mt-lg">
+          <q-space />
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
+          <q-space />
+        </div>
+      </div>
       <div v-else-if="showErrorDetais">
         <q-card-section dark bordered class="bg-red-5">
           <div class="text-h6">{{ error.title }}</div>
@@ -177,6 +191,9 @@ export default {
     },
     showErrorDetais: function () {
       return this.currentView === 'error'
+    },
+    showPaymentStatus: function () {
+      return this.currentView === 'paymentStatus'
     },
   },
   filters: {
@@ -273,11 +290,8 @@ export default {
       this.balance = Math.round(response.data.balance / 1000)
     },
     payInvoice: async function () {
-      const dismissPaymentMsg = this.$q.notify({
-        timeout: 0,
-        message: 'Processing payment...',
-      })
       try {
+        this.currentView = 'paymentStatus'
         const response = await lnbitsApi(this.serverUrl).payInvoice(
           this.activeWallet,
           this.parse.data.request
@@ -294,10 +308,9 @@ export default {
         this.parse.paymentChecker = setInterval(() => {
           if (payResponse.data.paid) {
             clearInterval(this.parse.paymentChecker)
-            dismissPaymentMsg()
             this.closeDialog()
           }
-        }, 2000)
+        }, 1000)
       } catch (err) {
         this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
         dismissPaymentMsg()
