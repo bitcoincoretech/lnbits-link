@@ -1,4 +1,5 @@
-# lnbits-link (alpha version)
+# lnbits browser extension (alpha version)
+![lnbits extension 3](https://user-images.githubusercontent.com/2951406/120298961-3485bd00-c2d3-11eb-941a-b6bee5e54e6f.png)
 
 Lightweight Network browser extensions for **LNbits** that allows the user to connect to an existing **LNbits** server and make payments in the browser. It supports:
   - [x] BOLT11 invoices
