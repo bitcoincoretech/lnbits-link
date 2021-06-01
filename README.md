@@ -34,6 +34,7 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/)) style.
  - visit a site that accepts Lightning Payments (BOLT11 or LNURL-pay)
  - click on the link
  - a dialog is open asking for confirmation. Confirm (or not). That is it!
+![lnbits extension 2c](https://user-images.githubusercontent.com/2951406/120315846-715aaf80-c2e5-11eb-9163-0a7bf3667556.png)
 
 ## Supported Browsers
 The extension can be installed on:
