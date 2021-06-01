@@ -11,10 +11,21 @@ This extension does **not** require for the user to configure a Lightning Networ
   - for a **non-technical** user it is *difficult* to configure and manage a LN node
   - for a **technical user** it is *easy* to add a LNbits server next to the LN node
 
+## Instalation
+### Firefox
+  - todo
+### Chrome
+  - download & unzip extension
+  - go to chrome://extensions/
+  - enable `Developer Mode`
+  - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
+### Opera: 
+  - todo
+
 ## Configuration
 The user must:
  - provide a [LNbits](https://lnbits.org/) server URL (by default it connects to [lnbits.com](https://lnbits.com/))
- - provide a **User ID** if it has one, or create one on the spot
+ - provide a **User ID** (if already has one), or create a new user on the spot
  - send some funds to the wallet
 
 ## Supported Browsers
