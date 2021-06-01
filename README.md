@@ -1,8 +1,6 @@
 # lnbits-link
 
-A browser extension for paying *Lightning Network* invoices.
-
-Supports:
+A browser extension for paying *Lightning Network* invoices. It supports:
   - [x] BOLT11 invoices
   - [x] LNURL-Pay
 
