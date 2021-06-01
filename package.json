@@ -1,0 +1,56 @@
+{
+  "name": "lnbits-extension",
+  "version": "0.0.1",
+  "description": "LNbits browser extension",
+  "scripts": {
+    "manifest:firefox": "jq -s '.[0] * .[1]' src/manifests/base.manifest.json src/manifests/firefox.manifest.json > src/manifest.json",
+    "manifest:chrome": "jq -s '.[0] * .[1]' src/manifests/base.manifest.json src/manifests/chrome.manifest.json > src/manifest.json",
+    "manifest:opera": "jq -s '.[0] * .[1]' src/manifests/base.manifest.json src/manifests/opera.manifest.json > src/manifest.json",
+    "dev:firefox": "npm run manifest:firefox && mix",
+    "dev:chrome": "npm run manifest:chrome && mix",
+    "dev:opera": "npm run manifest:opera && mix",
+    "prod:firefox": "npm run manifest:firefox && mix --production",
+    "prod:chrome": "npm run manifest:chrome && mix --production",
+    "prod:opera": "npm run manifest:opera && mix --production",
+    "watch:chrome": "npm run manifest:chrome && && mix watch",
+    "build:firefox": "npm run prod:firefox && rm -rf dist-zip && npm run zip",
+    "build:chrome": "npm run prod:chrome && rm -rf dist-zip && npm run zip",
+    "build:opera": "npm run prod:opera && rm -rf dist-zip && npm run zip",
+    "zip": "node scripts/build-zip.js",
+    "format": "prettier --write 'src/assets/**/*.{css,js,vue}'",
+    "pre-commit": "lint-staged"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ln-zap/bolt11": "^1.2.8-beta.3",
+    "axios": "^0.21.1",
+    "jquery": "^3.6.0",
+    "laravel-mix": "^6.0.11",
+    "lodash": "^4.17.21",
+    "qrcode": "^1.4.4",
+    "quasar": "^1.13.2",
+    "vue": "^2.6.12",
+    "vue-loader": "^15.9.6",
+    "vue-qrcode": "^0.4.0",
+    "vue-router": "^3.5.1",
+    "vue-template-compiler": "^2.6.12",
+    "webextension-polyfill": "^0.8.0"
+  },
+  "devDependencies": {
+    "archiver": "^5.3.0",
+    "lint-staged": "^10.5.3",
+    "node-jq": "^1.12.0",
+    "postcss": "^8.2.15",
+    "prettier": "2.2.1",
+    "resolve-url-loader": "^3.1.3",
+    "sass": "^1.32.13",
+    "sass-loader": "^11.1.1"
+  },
+  "lint-staged": {
+    "*.{css,js,vue}": [
+      "prettier --write"
+    ]
+  }
+}

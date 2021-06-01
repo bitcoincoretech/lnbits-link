@@ -1,0 +1,19 @@
+html,
+body {
+  width: 400px;
+  height: 550x;
+  overflow: auto;
+  border: 0;
+  padding: 0;
+}
+
+.popup-body {
+  width: 400px;
+  height: 550x;
+  overflow: auto;
+}
+
+.iframe-style {
+  width: 400px;
+  height: 500px;
+}

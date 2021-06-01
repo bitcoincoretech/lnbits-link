@@ -1,0 +1,22 @@
+{
+    "/dist/views/popup/popup.js": "/dist/views/popup/popup.js",
+    "/dist/views/options/options.js": "/dist/views/options/options.js",
+    "/dist/views/content-inject/content.js": "/dist/views/content-inject/content.js",
+    "/dist/content_script/index.js": "/dist/content_script/index.js",
+    "/dist/background_script/index.js": "/dist/background_script/index.js",
+    "/dist/css/base.css": "/dist/css/base.css",
+    "/dist/manifest.json": "/dist/manifest.json",
+    "/dist/img/favicon-128.png": "/dist/img/favicon-128.png",
+    "/dist/img/favicon-16.png": "/dist/img/favicon-16.png",
+    "/dist/img/favicon-32.png": "/dist/img/favicon-32.png",
+    "/dist/img/favicon-48.png": "/dist/img/favicon-48.png",
+    "/dist/img/logo.png": "/dist/img/logo.png",
+    "/dist/fonts/material-icons-v50.woff2": "/dist/fonts/material-icons-v50.woff2",
+    "/dist/css/app.css": "/dist/css/app.css",
+    "/dist/css/quasar.css": "/dist/css/quasar.css",
+    "/dist/views/popup/popup.html": "/dist/views/popup/popup.html",
+    "/dist/views/popup/style.css": "/dist/views/popup/style.css",
+    "/dist/views/options/options.html": "/dist/views/options/options.html",
+    "/dist/views/options/style.css": "/dist/views/options/style.css",
+    "/dist/views/content-inject/content.html": "/dist/views/content-inject/content.html"
+}
