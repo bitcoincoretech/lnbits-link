@@ -13,14 +13,13 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
   - for a **technical user** it is *easy* to add a LNbits server next to the LN node
 
 ## Install
-### Firefox
-  - todo
+
 ### Chrome
   - download & unzip extension
   - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
-### Opera: 
+### Firefox, Opera: 
   - todo
 
 ## Configure
