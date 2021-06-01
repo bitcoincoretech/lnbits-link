@@ -12,11 +12,13 @@ This extension does **not** require for the user to configure a Lightning Networ
   - for a **technical user** it is *easy* to add a LNbits server next to the LN node
 
 
-### Supported Browsers
+## Supported Browsers
 The extension can be installed on:
  - [ ] firefox
  - [x] chrome
  - [ ] opera
 
-### Licence
+## Releases
+
+## Licence
 MIT
