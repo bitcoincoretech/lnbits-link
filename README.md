@@ -27,12 +27,14 @@ The user must:
  - provide a [LNbits](https://lnbits.org/) server URL (by default it connects to [lnbits.com](https://lnbits.com/))
  - provide a **User ID** (if already has one), or create a new user on the spot
  - send some funds to the wallet
+![lnbits extension 2b](https://user-images.githubusercontent.com/2951406/120313384-8d108680-c2e2-11eb-8cb9-d23abe4bc56c.png)
+
 
 ## Supported Browsers
 The extension can be installed on:
- - [ ] firefox
+ - [ ] firefox (todo)
  - [x] chrome
- - [ ] opera
+ - [ ] opera (todo)
 
 ## Releases
 
