@@ -16,7 +16,7 @@ This extension does **not** require for the user to configure a Lightning Networ
   - todo
 ### Chrome
   - download & unzip extension
-  - go to chrome://extensions/
+  - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
 ### Opera: 
