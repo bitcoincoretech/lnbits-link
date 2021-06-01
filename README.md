@@ -11,6 +11,7 @@ Motivation:
   - for a **technical user** it is *easy* to add a LNbits server next to the LN node
 
 
+### Supported Browsers
 The extension can be installed on:
  - [ ] firefox
  - [x] chrome
