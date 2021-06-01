@@ -2,7 +2,7 @@
   <q-layout>
     <q-page-container>
       <q-page>
-        <iframe width="400px" height="500px" id="lnbits-site"></iframe>
+        <iframe id="lnbits-site" class="iframe-style"></iframe>
       </q-page>
     </q-page-container>
 

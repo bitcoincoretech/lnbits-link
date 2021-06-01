@@ -12,3 +12,8 @@ body {
   height: 550x;
   overflow: auto;
 }
+
+.iframe-style {
+  width: 400px;
+  height: 500px;
+}
