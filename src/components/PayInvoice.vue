@@ -88,9 +88,19 @@
       <div v-else-if="showPaymentStatus">
         <q-card-section dark bordered>
           <p class="text-center">
-            <q-spinner-bars color="purple" size="5.5em" />
+            <q-icon v-if="paymentDetails.isPayed" name="check_circle" size="5.5em" color="green" />
+            <q-spinner-bars v-else color="purple" size="5.5em" />
           </p>
-          <p class="q-my-none text-h6 text-center">Processing payment....</p>
+          <p class="q-my-none text-h6 text-center">{{ paymentDetails.message }}</p>
+          <q-expansion-item
+            v-if="paymentDetails.details && paymentDetails.details.length"
+            group="extras"
+            icon="info"
+            class="bg-yellow-1"
+            label="Details"
+          >
+            <span v-html="paymentDetails.details"></span>
+          </q-expansion-item>
         </q-card-section>
 
         <div class="row q-mt-lg">
@@ -104,7 +114,7 @@
           <div class="text-h6">{{ error.title }}</div>
           <div class="text-subtitle2">{{ error.message }}</div>
         </q-card-section>
-        <q-expansion-item group="extras" class="bg-yellow-2" icon="info" label="Details">
+        <q-expansion-item group="extras" class="bg-yellow-2" icon="error" label="Details">
           <p class="text-wrap">
             {{ parse.data.request }}
           </p>
@@ -155,6 +165,11 @@ export default {
           comment: '',
         },
         paymentChecker: null,
+      },
+      paymentDetails: {
+        isPayed: false,
+        message: '...',
+        details: '',
       },
       receive: {
         show: false,
@@ -291,7 +306,7 @@ export default {
     },
     payInvoice: async function () {
       try {
-        this.currentView = 'paymentStatus'
+        this.showPaymentInProgressCard()
         const response = await lnbitsApi(this.serverUrl).payInvoice(
           this.activeWallet,
           this.parse.data.request
@@ -308,21 +323,18 @@ export default {
         this.parse.paymentChecker = setInterval(() => {
           if (payResponse.data.paid) {
             clearInterval(this.parse.paymentChecker)
-            this.closeDialog()
+            const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
+            this.showPaymentCompentedCard(preimageHtml)
           }
         }, 1000)
       } catch (err) {
+        console.error('### err', JSON.stringify(err))
         this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
-        dismissPaymentMsg()
       }
     },
     payLnurl: async function () {
-      const dismissPaymentMsg = this.$q.notify({
-        timeout: 0,
-        message: 'Processing payment...',
-      })
-
       try {
+        this.showPaymentInProgressCard()
         const response = await lnbitsApi(this.serverUrl).payLnurl(
           this.activeWallet,
           this.parse.lnurlpay.callback,
@@ -342,30 +354,21 @@ export default {
             response.data.payment_hash
           )
           if (res.data.paid) {
-            // this.showDialog = false
-            dismissPaymentMsg()
             clearInterval(this.parse.paymentChecker)
 
             // show lnurlpay success action
             if (response.data.success_action) {
               switch (response.data.success_action.tag) {
                 case 'url':
-                  this.$q.notify({
-                    message: `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`,
-                    caption: response.data.success_action.description,
-                    html: true,
-                    type: 'positive',
-                    timeout: 0,
-                    closeBtn: true,
-                  })
+                  const actionDescription = `<strong>Message: </strong> ${response.data.success_action.description}`
+                  const actionLink = `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`
+                  this.showPaymentCompentedCard(
+                    `<p class="text-wrap">${actionDescription}<br>${actionLink}</p>`
+                  )
                   break
                 case 'message':
-                  this.$q.notify({
-                    message: response.data.success_action.message,
-                    type: 'positive',
-                    timeout: 0,
-                    closeBtn: true,
-                  })
+                  const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
+                  this.showPaymentCompentedCard(message)
                   break
               }
             }
@@ -373,7 +376,6 @@ export default {
         }, 2000)
       } catch (err) {
         this.showErrorCard(err, 'Cannot pay LNURL invoice!')
-        dismissPaymentMsg()
       }
     },
     gotoOptionsPage() {
@@ -386,6 +388,18 @@ export default {
       this.currentView = 'error'
       this.error.title = title
       this.error.message = (err.message || err) + '.'
+    },
+    showPaymentInProgressCard() {
+      this.currentView = 'paymentStatus'
+      this.paymentDetails.isPayed = false
+      this.paymentDetails.message = 'Processing payment...'
+      this.paymentDetails.details = ''
+    },
+    showPaymentCompentedCard(details = '') {
+      this.currentView = 'paymentStatus'
+      this.paymentDetails.isPayed = true
+      this.paymentDetails.message = 'Payment Successful!'
+      this.paymentDetails.details = details
     },
   },
   mounted: async function () {
