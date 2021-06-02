@@ -9,7 +9,7 @@ This extension does **not** require for the user to configure a Lightning Networ
 The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Demo
-![lnbits-part-1-2](https://user-images.githubusercontent.com/2951406/120510752-6467ba00-c3d2-11eb-97eb-b404696dffd0.gif)
+![lnbits-link-1](https://user-images.githubusercontent.com/2951406/120511880-7f86f980-c3d3-11eb-94ca-291c520d886a.gif)
 
 
 ## Install
