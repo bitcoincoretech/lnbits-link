@@ -32,7 +32,7 @@ try {
   window.addEventListener("message", (e) => {
     const data = e.data;
     if (router.currentRoute.path === '/payment') {
-      router.replace('/foo')
+      router.replace('/loading')
     }
     setTimeout(() => {
       router.replace({
