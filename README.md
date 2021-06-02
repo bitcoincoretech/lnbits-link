@@ -14,7 +14,7 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
   - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
-  - ![lnbit-incon3](https://user-images.githubusercontent.com/2951406/120470057-c7922600-c3ab-11eb-963c-e04985563471.png)
+![lnbit-incon3](https://user-images.githubusercontent.com/2951406/120470057-c7922600-c3ab-11eb-963c-e04985563471.png)
 
 ### Firefox, Opera: 
   - todo
