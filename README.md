@@ -27,10 +27,11 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Use
  - make sure there are some funds in the wallet
- - visit a site that accepts Lightning Payments (BOLT11 or LNURL Pay)
- - click on the link
+ - visit a site that accepts Lightning Payments (BOLT11 or LNURL Pay). See [Testing Sites](https://github.com/bitcoincoretech/lnbits-link/blob/main/README.md#testing-sites) below.
+ - click on a payment Link
  - a dialog is open asking for confirmation. Confirm (or not). That is it!
 ![lnbits extension 2c](https://user-images.githubusercontent.com/2951406/120315846-715aaf80-c2e5-11eb-9163-0a7bf3667556.png)
+ - check the balance on the popup view of the extension
 
 ## Supported Browsers
 The extension can be installed on:
