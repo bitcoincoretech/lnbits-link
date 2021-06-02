@@ -1,7 +1,7 @@
 # lnbits browser extension (alpha version)
 ![lnbits extension 3](https://user-images.githubusercontent.com/2951406/120298961-3485bd00-c2d3-11eb-941a-b6bee5e54e6f.png)
 
-Light browser extensions for **[LNbits](https://lnbits.org/)** that allows the user to connect to any existing **[LNbits](https://lnbits.org/)** server and make payments in the browser. It supports:
+Light browser extensions for **[LNbits](https://lnbits.org/)**. It allows users to connect to any existing **[LNbits](https://lnbits.org/)** server and make payments in the browser. It supports:
   - [x] BOLT11 invoices
   - [x] LNURL Pay
 
@@ -9,12 +9,13 @@ This extension does **not** require for the user to configure a Lightning Networ
 The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Install
-
 ### Chrome
   - download & unzip extension
   - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
+![lnbit-incon3](https://user-images.githubusercontent.com/2951406/120470057-c7922600-c3ab-11eb-963c-e04985563471.png)
+
 ### Firefox, Opera: 
   - todo
 
@@ -26,10 +27,11 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Use
  - make sure there are some funds in the wallet
- - visit a site that accepts Lightning Payments (BOLT11 or LNURL Pay)
- - click on the link
+ - visit a site that accepts Lightning Payments (BOLT11 or LNURL Pay). See [Testing Sites](https://github.com/bitcoincoretech/lnbits-link/blob/main/README.md#testing-sites) below.
+ - click on a payment Link
  - a dialog is open asking for confirmation. Confirm (or not). That is it!
 ![lnbits extension 2c](https://user-images.githubusercontent.com/2951406/120315846-715aaf80-c2e5-11eb-9163-0a7bf3667556.png)
+ - check the balance on the popup view of the extension
 
 ## Supported Browsers
 The extension can be installed on:
@@ -48,6 +50,16 @@ rowser-extension](https://github.com/anonaddy/browser-extension), [fregante/brow
 
 ## Releases
 See [Releases Page](https://github.com/bitcoincoretech/lnbits-link/releases)
+
+## Testing sites
+### Mainnet
+ - https://lnbits.com/
+ - https://yalls.org/ 
+ - https://lnurl.bigsun.xyz/
+### Testnet
+ - https://lnbits.lndev.link/
+ - https://htlc.me/
+
 
 ## Licence
 MIT
