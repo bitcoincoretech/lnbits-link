@@ -50,5 +50,15 @@ rowser-extension](https://github.com/anonaddy/browser-extension), [fregante/brow
 ## Releases
 See [Releases Page](https://github.com/bitcoincoretech/lnbits-link/releases)
 
+## Testing sites
+### Mainnet
+ - https://lnbits.com/
+ - https://yalls.org/ 
+ - https://lnurl.bigsun.xyz/
+### Testnet
+ - https://lnbits.lndev.link/
+ - https://htlc.me/
+
+
 ## Licence
 MIT
