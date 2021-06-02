@@ -9,6 +9,7 @@ This extension does **not** require for the user to configure a Lightning Networ
 The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Install
+![lnbits-icon](https://user-images.githubusercontent.com/2951406/120469524-21462080-c3ab-11eb-89f6-78efa8e52357.png)
 
 ### Chrome
   - download & unzip extension
