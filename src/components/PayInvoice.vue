@@ -126,7 +126,7 @@
         </div>
       </div>
       <div v-else>
-        <h6>Unexpected error!</h6>
+        <p class="q-my-none text-h6 text-center">LNbits browser extension</p>
         <div class="row q-mt-lg">
           <q-space />
           <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
@@ -369,6 +369,10 @@ export default {
                 case 'message':
                   const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
                   this.showPaymentCompentedCard(message)
+                  break
+                default:
+                  const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${response.data.preimage || ''} </p>`
+                  this.showPaymentCompentedCard(preimageHtml)
                   break
               }
             }
