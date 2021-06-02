@@ -10,7 +10,7 @@ The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Install
 ### Chrome
-  - download & unzip extension
+  - [download](https://github.com/bitcoincoretech/lnbits-link/releases) & unzip extension
   - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
