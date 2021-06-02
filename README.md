@@ -9,13 +9,13 @@ This extension does **not** require for the user to configure a Lightning Networ
 The look and feel closely follows the [lnbits.com](https://lnbits.com/) style.
 
 ## Install
-![lnbits-icon2](https://user-images.githubusercontent.com/2951406/120469767-784bf580-c3ab-11eb-9bf9-58c09b36ae07.png)
-
 ### Chrome
   - download & unzip extension
   - go to [chrome://extensions/](chrome://extensions/)
   - enable `Developer Mode`
   - click `Load Unpacked` and select the folder with the unzipped extension (should have the `manifest.json` file in it)
+  - ![lnbit-incon3](https://user-images.githubusercontent.com/2951406/120470057-c7922600-c3ab-11eb-963c-e04985563471.png)
+
 ### Firefox, Opera: 
   - todo
 
