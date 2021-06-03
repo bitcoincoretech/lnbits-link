@@ -62,6 +62,7 @@ See [Releases Page](https://github.com/bitcoincoretech/lnbits-link/releases)
 ### Testnet
  - https://lnbits.lndev.link/
  - https://htlc.me/
+ - https://testnet.yalls.org/ 
 
 
 ## Licence
