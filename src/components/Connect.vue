@@ -247,11 +247,20 @@ export default {
           })
           return
         }
+        const wallet = !this.walletId ? user.wallets[0].id : user.wallets.find(w => w.id === this.walletId)
+        if (!wallet){
+          this.$q.notify({
+            type: 'negative',
+            message: 'Cannot find wallet!',
+            caption: `Please check that the 'Wallet ID' is valid!`,
+          })
+          return
+        }
 
         await this.$browser.storage.sync.set({ user })
         this.$router.push({
           path: 'lnbits',
-          query: { userId: user.id, walletId: user.wallets[0].id },
+          query: { userId: user.id, walletId: wallet.id },
         })
       } catch (err) {
         console.error(err)
@@ -314,8 +323,10 @@ export default {
       }
       this.requestDisconnect = false
       this.userId = ''
+      this.walletId = ''
       this.userData = {}
       await this.$browser.storage.sync.set({ userId: '' })
+      await this.$browser.storage.sync.set({ walletId: '' })
       await this.$browser.storage.sync.set({ user: {} })
     },
     async cancelDisconnect() {
