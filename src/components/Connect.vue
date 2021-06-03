@@ -37,6 +37,7 @@
                 v-model.trim="serverUrl"
                 type="text"
                 label="LNbits Server URL *"
+                hint="The LNbits server URL that can optionally contain the User ID and Wallet ID"
               ></q-input>
               <q-input
                 :readonly="hasActiveUser"
@@ -52,6 +53,14 @@
                     class="cursor-pointer"
                     @click="showUserId = !showUserId"
                   /> </template
+              ></q-input>
+              <q-input
+                :readonly="hasActiveUser"
+                type="text"
+                filled
+                dense
+                v-model.trim="walletId"
+                label="Wallet ID"
               ></q-input>
               <q-expansion-item
                 v-if="requestDisconnect"
@@ -130,6 +139,7 @@ export default {
   data() {
     return {
       userId: '',
+      walletId: '',
       showUserId: false,
       userData: {},
       serverUrl: '',
@@ -139,6 +149,7 @@ export default {
   },
   async mounted() {
     this.userId = await this.getUserId()
+    this.walletId = await this.getWalletId()
     this.userData = await this.getUserData()
     this.serverUrl = await this.getServerUrl()
   },
@@ -148,16 +159,36 @@ export default {
         try {
           await this.$browser.storage.sync.set({ userId: val })
         } catch (error) {
-          console.log(error)
+          console.error(error)
+        }
+      },
+    },
+    walletId: {
+      async handler(val) {
+        try {
+          await this.$browser.storage.sync.set({ walletId: val })
+        } catch (error) {
+          console.error(error)
         }
       },
     },
     serverUrl: {
       async handler(val) {
         try {
-          await this.$browser.storage.sync.set({ serverUrl: val })
-        } catch (error) {
-          console.error(error)
+          const url = new URL(val || '')
+
+          if (url.searchParams.has('wal')) {
+            this.walletId = url.searchParams.get('wal')
+          }
+
+          if (url.searchParams.has('usr')) {
+            this.userId = url.searchParams.get('usr')
+          }
+
+          await this.$browser.storage.sync.set({ serverUrl: url.origin || '' })
+        } catch (err) {
+          console.log(err)
+          await this.$browser.storage.sync.set({ serverUrl: '' })
         }
       },
     },
@@ -177,6 +208,15 @@ export default {
         console.error(error)
       }
     },
+    async getWalletId() {
+      try {
+        const result = await this.$browser.storage.sync.get({ walletId: '' })
+        return result.walletId
+      } catch (error) {
+        // TODO notify
+        console.error(error)
+      }
+    },
     async getUserData() {
       try {
         const result = await this.$browser.storage.sync.get({ user: '' })
@@ -191,12 +231,13 @@ export default {
         const result = await this.$browser.storage.sync.get({ serverUrl: '' })
         return result.serverUrl || 'https://lnbits.com'
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     },
     async connect() {
       try {
-        const user = await lnBitsConnect.checkUser(this.serverUrl, this.userId)
+        const serverUrl = await this.getServerUrl()
+        const user = await lnBitsConnect.checkUser(serverUrl, this.userId)
 
         if (!user || !user.id || !user.wallets || !user.wallets.length) {
           this.$q.notify({
