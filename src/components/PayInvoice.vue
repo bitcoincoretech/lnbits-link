@@ -371,7 +371,9 @@ export default {
                   this.showPaymentCompentedCard(message)
                   break
                 default:
-                  const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${response.data.preimage || ''} </p>`
+                  const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${
+                    response.data.preimage || ''
+                  } </p>`
                   this.showPaymentCompentedCard(preimageHtml)
                   break
               }
@@ -417,9 +419,23 @@ export default {
     const result1 = await this.$browser.storage.sync.get({
       user: '',
     })
-    this.activeWallet = result1.user.wallets[0]
-    this.decodeRequest()
-    this.fetchBalance()
+    const result2 = await this.$browser.storage.sync.get({
+      walletId: '',
+    })
+    const walletId = result2.walletId
+    const user = result1.user
+    if (this.serverUrl && user && user.id && user.wallets && user.wallets.length) {
+      const activeWallet = user.wallets.find((w) => w.id === walletId)
+      this.activeWallet = activeWallet || user.wallets[0]
+      this.decodeRequest()
+      this.fetchBalance()
+    } else {
+      this.$q.notify({
+        type: 'negative',
+        message: 'No user or wallet found!',
+        caption: `Please check that you are connected to a LNbits server.`,
+      })
+    }
   },
 }
 </script>

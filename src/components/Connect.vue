@@ -237,8 +237,8 @@ export default {
     async connect() {
       try {
         const serverUrl = await this.getServerUrl()
-        const user = await lnBitsConnect.checkUser(serverUrl, this.userId)
 
+        const user = await lnBitsConnect.checkUser(serverUrl, this.userId)
         if (!user || !user.id || !user.wallets || !user.wallets.length) {
           this.$q.notify({
             type: 'negative',
@@ -247,8 +247,11 @@ export default {
           })
           return
         }
-        const wallet = !this.walletId ? user.wallets[0].id : user.wallets.find(w => w.id === this.walletId)
-        if (!wallet){
+
+        const wallet = !this.walletId
+          ? user.wallets[0]
+          : user.wallets.find((w) => w.id === this.walletId)
+        if (!wallet) {
           this.$q.notify({
             type: 'negative',
             message: 'Cannot find wallet!',
@@ -256,11 +259,12 @@ export default {
           })
           return
         }
+        await this.$browser.storage.sync.set({ walletId: wallet.id })
 
+        // TODO extract services, show active wallet NAME on dialogs
         await this.$browser.storage.sync.set({ user })
         this.$router.push({
           path: 'lnbits',
-          query: { userId: user.id, walletId: wallet.id },
         })
       } catch (err) {
         console.error(err)
@@ -302,10 +306,10 @@ export default {
         }
 
         await this.$browser.storage.sync.set({ userId: user.id })
+        await this.$browser.storage.sync.set({ walletId: user.wallets[0].id })
         await this.$browser.storage.sync.set({ user })
         this.$router.push({
-          path: 'lnbits',
-          query: { userId: user.id, walletId: user.wallets[0].id },
+          path: 'lnbits'
         })
       } catch (err) {
         console.error(err)

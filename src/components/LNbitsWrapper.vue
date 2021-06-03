@@ -66,11 +66,14 @@ export default {
       user: '',
     })
     this.user = result.user
+    const userId = (result.user && result.user.id) || ''
 
-    const userId = this.$route.query.userId || ''
-    const walletId = this.$route.query.walletId || ''
+    const walletResult = await browser.storage.sync.get({
+      walletId: '',
+    })
+    const walletId = walletResult.walletId || ''
 
-    // TODO: no user/wallet/serverUrl found
+    // TODO: no user/serverUrl found
 
     const closeLoading = this.$q.notify({
       type: 'ongoing',
