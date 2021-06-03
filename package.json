@@ -16,7 +16,7 @@
     "build:firefox": "npm run prod:firefox && rm -rf dist-zip && npm run zip",
     "build:chrome": "npm run prod:chrome && rm -rf dist-zip && npm run zip",
     "build:opera": "npm run prod:opera && rm -rf dist-zip && npm run zip",
-    "zip": "node scripts/build-zip.js",
+    "zip": "rm -rf dist-zip && node scripts/build-zip.js",
     "format": "prettier --write 'src/assets/**/*.{css,js,vue}'",
     "pre-commit": "lint-staged"
   },

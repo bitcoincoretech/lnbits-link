@@ -4,7 +4,7 @@
     "author": "motorina0",
     "description": "LNbits browser extension",
     "homepage_url": "https://github.com/bitcoincoretech/lnbits-link",
-    "version": "0.0.2",
+    "version": "0.0.1",
     "icons": {
       "16": "img/favicon-16.png",
       "32": "img/favicon-32.png",
