@@ -85,6 +85,71 @@
           <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
         </div>
       </div>
+      <div v-else-if="showLnurlWithdrawDetails">
+        <div v-if="!receive.paymentReq">
+          <q-form @submit="createInvoice" class="q-gutter-md">
+            <p v-if="receive.lnurl" class="text-h6 text-center q-my-none">
+              <b>{{ receive.lnurl.domain }}</b> is requesting an invoice:
+            </p>
+
+            <q-input
+              filled
+              dense
+              v-model.number="receive.data.amount"
+              type="number"
+              label="Amount (sat) *"
+              :min="receive.minMax[0]"
+              :max="receive.minMax[1]"
+              :readonly="receive.lnurl && receive.lnurl.fixed"
+            ></q-input>
+            <q-input
+              filled
+              dense
+              v-model.trim="receive.data.memo"
+              label="Memo"
+              placeholder="LNbits invoice"
+            ></q-input>
+            <div v-if="receive.status == 'pending'" class="row q-mt-lg">
+              <q-btn
+                unelevated
+                color="deep-purple"
+                :disable="
+                  receive.data.memo == null ||
+                  receive.data.amount == null ||
+                  receive.data.amount <= 0
+                "
+                type="submit"
+              >
+                <span v-if="receive.lnurl"> Withdraw</span>
+                <span v-else> Create invoice </span>
+              </q-btn>
+              <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+            </div>
+            <q-spinner
+              v-if="receive.status == 'loading'"
+              color="deep-purple"
+              size="2.55em"
+            ></q-spinner>
+          </q-form>
+        </div>
+        <div v-else>
+          <div class="text-center q-mb-lg">
+            <a :href="'lightning:' + receive.paymentReq">
+              <q-responsive :ratio="1" class="q-mx-xl">
+                <qrcode
+                  :value="receive.paymentReq"
+                  :options="{ width: 340 }"
+                  class="rounded-borders"
+                ></qrcode>
+              </q-responsive>
+            </a>
+          </div>
+          <div class="row q-mt-lg">
+            <q-btn outline color="grey" @click="copyText(receive.paymentReq)">Copy invoice</q-btn>
+            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Close</q-btn>
+          </div>
+        </div>
+      </div>
       <div v-else-if="showPaymentStatus">
         <q-card-section dark bordered>
           <p class="text-center">
@@ -202,7 +267,10 @@ export default {
       return this.currentView === 'invoice'
     },
     showLnurlPayDetais: function () {
-      return this.currentView === 'lnurlpay'
+      return this.currentView === 'lnurlPay'
+    },
+    showLnurlWithdrawDetails: function () {
+      return this.currentView === 'lnurlWithdraw'
     },
     showErrorDetais: function () {
       return this.currentView === 'error'
@@ -241,13 +309,13 @@ export default {
           }
 
           if (data.kind === 'pay') {
-            this.currentView = 'lnurlpay'
+            this.currentView = 'lnurlPay'
             this.parse.lnurlpay = Object.freeze(data)
             this.parse.data.amount = data.minSendable / 1000
             // } else if (data.kind === 'auth') {
             //   this.parse.lnurlauth = Object.freeze(data)
           } else if (data.kind === 'withdraw') {
-            this.receive.show = true
+            this.currentView = 'lnurlWithdraw'
             this.receive.status = 'pending'
             this.receive.paymentReq = null
             this.receive.paymentHash = null
@@ -383,6 +451,9 @@ export default {
       } catch (err) {
         this.showErrorCard(err, 'Cannot pay LNURL invoice!')
       }
+    },
+    createInvoice: async function () {
+      console.log('######### createInvoice')
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
