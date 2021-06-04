@@ -124,11 +124,7 @@
               </q-btn>
               <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
             </div>
-            <q-spinner
-              v-if="receive.status == 'loading'"
-              color="deep-purple"
-              size="2.55em"
-            ></q-spinner>
+            <q-spinner-bars v-if="receive.status == 'loading'" color="purple" size="5.5em" />
           </q-form>
         </div>
         <div v-else>
@@ -214,6 +210,9 @@
         </div>
       </div>
       <div v-else>
+        <p class="text-center">
+          <q-spinner-puff color="purple" size="5.5em" />
+        </p>
         <p class="q-my-none text-h6 text-center">LNbits browser extension</p>
         <div class="row q-mt-lg">
           <q-space />
