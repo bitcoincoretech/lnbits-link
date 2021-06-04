@@ -149,6 +149,30 @@
           </div>
         </div>
       </div>
+      <div v-else-if="showLnurlAuthDetails">
+        <q-form @submit="authLnurl" class="q-gutter-md">
+          <p class="q-my-none text-h6">
+            Authenticate with <b>{{ parse.lnurlauth.domain }}</b
+            >?
+          </p>
+          <q-separator class="q-my-sm"></q-separator>
+          <p>
+            For every website and for every LNbits wallet, a new keypair will be deterministically
+            generated so your identity can't be tied to your LNbits wallet or linked across
+            websites. No other data will be shared with {{ parse.lnurlauth.domain }}.
+          </p>
+          <p>
+            Your public key for <b>{{ parse.lnurlauth.domain }}</b> is:
+          </p>
+          <p class="q-mx-xl">
+            <code class="text-wrap"> {{ parse.lnurlauth.pubkey }} </code>
+          </p>
+          <div class="row q-mt-lg">
+            <q-btn unelevated color="deep-purple" type="submit">Login</q-btn>
+            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+          </div>
+        </q-form>
+      </div>
       <div v-else-if="showPaymentStatus">
         <q-card-section dark bordered>
           <p class="text-center">
@@ -223,6 +247,7 @@ export default {
       parse: {
         invoice: null,
         lnurlpay: null,
+        lnurlauth: null,
         data: {
           request: '',
           amount: 0,
@@ -271,6 +296,9 @@ export default {
     showLnurlWithdrawDetails: function () {
       return this.currentView === 'lnurlWithdraw'
     },
+    showLnurlAuthDetails: function () {
+      return this.currentView === 'lnurlAuth'
+    },
     showErrorDetais: function () {
       return this.currentView === 'error'
     },
@@ -311,8 +339,9 @@ export default {
             this.currentView = 'lnurlPay'
             this.parse.lnurlpay = Object.freeze(data)
             this.parse.data.amount = data.minSendable / 1000
-            // } else if (data.kind === 'auth') {
-            //   this.parse.lnurlauth = Object.freeze(data)
+          } else if (data.kind === 'auth') {
+            this.currentView = 'lnurlAuth'
+            this.parse.lnurlauth = Object.freeze(data)
           } else if (data.kind === 'withdraw') {
             this.currentView = 'lnurlWithdraw'
             this.receive.status = 'pending'
@@ -512,6 +541,29 @@ export default {
         this.showErrorCard(err, 'Cannot create invoice!')
       }
     },
+    authLnurl: async function () {
+      try {
+        this.showPaymentInProgressCard('Performing authentication...')
+
+        const response = await lnbitsApi(this.serverUrl).authLnurl(
+          this.activeWallet,
+          this.parse.lnurlauth.callback
+        )
+        console.log('##### response: ', response)
+
+        this.showPaymentCompentedCard('Authentication successful!')
+      } catch (err) {
+        console.log('##### err: ', err)
+        if (err.response && err.response.data && err.response.data.reason) {
+          this.showErrorCard(
+            err,
+            `Authentication failed! ${this.parse.lnurlauth.domain} says: ${err.response.data.reason}`
+          )
+        } else {
+          this.showErrorCard(err, 'Cannot authenticate!')
+        }
+      }
+    },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
     },
@@ -532,7 +584,7 @@ export default {
     showPaymentCompentedCard(details = '') {
       this.currentView = 'paymentStatus'
       this.paymentDetails.isPayed = true
-      this.paymentDetails.message = 'Payment Successful!'
+      this.paymentDetails.message = 'Success!'
       this.paymentDetails.details = details
     },
   },
