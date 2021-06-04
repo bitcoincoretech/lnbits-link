@@ -91,7 +91,6 @@
             <p v-if="receive.lnurl" class="text-h6 text-center q-my-none">
               <b>{{ receive.lnurl.domain }}</b> is requesting an invoice:
             </p>
-
             <q-input
               filled
               dense
@@ -303,8 +302,8 @@ export default {
             this.activeWallet.adminkey
           )
           let data = response.data
-          if (data.status === 'ERROR') {
-            this.showErrorCard(err, 'Cannot decode request!')
+          if (data.status === 'ERROR') {  
+            this.showErrorCard(data.reason, 'Cannot decode request!')
             return
           }
 
@@ -396,7 +395,6 @@ export default {
           }
         }, 1000)
       } catch (err) {
-        console.error('### err', JSON.stringify(err))
         this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
       }
     },
@@ -496,7 +494,8 @@ export default {
 
           if (paymentResponse.data.paid) {
             clearInterval(this.receive.paymentChecker)
-            this.showPaymentCompentedCard(JSON.stringify(paymentResponse.data))
+            const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${paymentResponse.data.preimage} </p>`
+            this.showPaymentCompentedCard(preimageHtml)
           }
         }, 2000)
       } catch (err) {

@@ -23,6 +23,9 @@ function handleLinkClick() {
             return
         }
 
+        // stop redirect or request for app selection
+        e.preventDefault()
+
         if (!isInitialized) {
             isInitialized = true;
             document.body.appendChild(iframe);
