@@ -302,7 +302,7 @@ export default {
             this.activeWallet.adminkey
           )
           let data = response.data
-          if (data.status === 'ERROR') {  
+          if (data.status === 'ERROR') {
             this.showErrorCard(data.reason, 'Cannot decode request!')
             return
           }
@@ -415,35 +415,40 @@ export default {
           clearInterval(this.parse.paymentChecker)
         }, 40000)
         this.parse.paymentChecker = setInterval(async () => {
-          const res = await lnbitsApi(this.serverUrl).getPayment(
-            this.activeWallet,
-            response.data.payment_hash
-          )
-          if (res.data.paid) {
-            clearInterval(this.parse.paymentChecker)
+          try {
+            const res = await lnbitsApi(this.serverUrl).getPayment(
+              this.activeWallet,
+              response.data.payment_hash
+            )
+            if (res.data.paid) {
+              clearInterval(this.parse.paymentChecker)
 
-            // show lnurlpay success action
-            if (response.data.success_action) {
-              switch (response.data.success_action.tag) {
-                case 'url':
-                  const actionDescription = `<strong>Message: </strong> ${response.data.success_action.description}`
-                  const actionLink = `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`
-                  this.showPaymentCompentedCard(
-                    `<p class="text-wrap">${actionDescription}<br>${actionLink}</p>`
-                  )
-                  break
-                case 'message':
-                  const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
-                  this.showPaymentCompentedCard(message)
-                  break
-                default:
-                  const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${
-                    response.data.preimage || ''
-                  } </p>`
-                  this.showPaymentCompentedCard(preimageHtml)
-                  break
+              // show lnurlpay success action
+              if (response.data.success_action) {
+                switch (response.data.success_action.tag) {
+                  case 'url':
+                    const actionDescription = `<strong>Message: </strong> ${response.data.success_action.description}`
+                    const actionLink = `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`
+                    this.showPaymentCompentedCard(
+                      `<p class="text-wrap">${actionDescription}<br>${actionLink}</p>`
+                    )
+                    break
+                  case 'message':
+                    const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
+                    this.showPaymentCompentedCard(message)
+                    break
+                  default:
+                    const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${
+                      response.data.preimage || ''
+                    } </p>`
+                    this.showPaymentCompentedCard(preimageHtml)
+                    break
+                }
               }
             }
+          } catch (err) {
+            this.showErrorCard(err, 'Cannot check LNURL payment!')
+            clearInterval(this.parse.paymentChecker)
           }
         }, 2000)
       } catch (err) {
@@ -486,18 +491,23 @@ export default {
           clearInterval(this.receive.paymentChecker)
         }, 40000)
         this.receive.paymentChecker = setInterval(async () => {
-          const hash = response.data.payment_hash
-          const paymentResponse = await lnbitsApi(this.serverUrl).getPayment(
-            this.activeWallet,
-            hash
-          )
+          try {
+            const hash = response.data.payment_hash
+            const paymentResponse = await lnbitsApi(this.serverUrl).getPayment(
+              this.activeWallet,
+              hash
+            )
 
-          if (paymentResponse.data.paid) {
+            if (paymentResponse.data.paid) {
+              clearInterval(this.receive.paymentChecker)
+              const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${paymentResponse.data.preimage} </p>`
+              this.showPaymentCompentedCard(preimageHtml)
+            }
+          } catch (err) {
+            this.showErrorCard(err, 'Invoice was not payed!')
             clearInterval(this.receive.paymentChecker)
-            const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${paymentResponse.data.preimage} </p>`
-            this.showPaymentCompentedCard(preimageHtml)
           }
-        }, 2000)
+        }, 5000)
       } catch (err) {
         this.showErrorCard(err, 'Cannot create invoice!')
       }
