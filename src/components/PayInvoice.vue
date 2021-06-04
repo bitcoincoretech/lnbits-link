@@ -553,7 +553,6 @@ export default {
 
         this.showPaymentCompentedCard('Authentication successful!')
       } catch (err) {
-        console.log('##### err: ', err)
         if (err.response && err.response.data && err.response.data.reason) {
           this.showErrorCard(
             err,
