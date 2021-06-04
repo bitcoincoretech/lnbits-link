@@ -517,6 +517,10 @@ export default {
         clearInterval(this.receive.paymentChecker)
         setTimeout(() => {
           clearInterval(this.receive.paymentChecker)
+          this.showErrorCard(
+            'Timed Out! Invoice was not payed!',
+            `Please also check the LNbits transactions list for this wallet: ${this.activeWallet.name}`
+          )
         }, 40000)
         this.receive.paymentChecker = setInterval(async () => {
           try {
@@ -543,13 +547,7 @@ export default {
     authLnurl: async function () {
       try {
         this.showPaymentInProgressCard('Performing authentication...')
-
-        const response = await lnbitsApi(this.serverUrl).authLnurl(
-          this.activeWallet,
-          this.parse.lnurlauth.callback
-        )
-        console.log('##### response: ', response)
-
+        await lnbitsApi(this.serverUrl).authLnurl(this.activeWallet, this.parse.lnurlauth.callback)
         this.showPaymentCompentedCard('Authentication successful!')
       } catch (err) {
         if (err.response && err.response.data && err.response.data.reason) {
@@ -588,31 +586,36 @@ export default {
   },
   mounted: async function () {
     this.showDialog = true
-    this.parse.data.request = this.$route.query.paymentRequest || ''
-    this.requestedBy = this.$route.query.requestedBy || ''
+    try {
+      this.parse.data.request = this.$route.query.paymentRequest || ''
+      this.requestedBy = this.$route.query.requestedBy || ''
 
-    const result = await this.$browser.storage.sync.get({ serverUrl: '' })
-    this.serverUrl = result.serverUrl
+      const result = await this.$browser.storage.sync.get({ serverUrl: '' })
+      this.serverUrl = result.serverUrl
 
-    const result1 = await this.$browser.storage.sync.get({
-      user: '',
-    })
-    const result2 = await this.$browser.storage.sync.get({
-      walletId: '',
-    })
-    const walletId = result2.walletId
-    const user = result1.user
-    if (this.serverUrl && user && user.id && user.wallets && user.wallets.length) {
-      const activeWallet = user.wallets.find((w) => w.id === walletId)
-      this.activeWallet = activeWallet || user.wallets[0]
-      this.decodeRequest()
-      this.fetchBalance()
-    } else {
-      this.$q.notify({
-        type: 'negative',
-        message: 'No user or wallet found!',
-        caption: `Please check that you are connected to a LNbits server.`,
+      const result1 = await this.$browser.storage.sync.get({
+        user: '',
       })
+      const result2 = await this.$browser.storage.sync.get({
+        walletId: '',
+      })
+      const walletId = result2.walletId
+      const user = result1.user
+      if (this.serverUrl && user && user.id && user.wallets && user.wallets.length) {
+        const activeWallet = user.wallets.find((w) => w.id === walletId)
+        this.activeWallet = activeWallet || user.wallets[0]
+        this.decodeRequest()
+        this.fetchBalance()
+      } else {
+        this.$q.notify({
+          type: 'negative',
+          message: 'No user or wallet found!',
+          caption: `Please check that you are connected to a LNbits server.`,
+        })
+      }
+    } catch (err) {
+      console.error(err)
+      this.showErrorCard(err, 'Please Refresh Page! LNbits browser extension context invalidated.')
     }
   },
 }

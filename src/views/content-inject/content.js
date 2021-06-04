@@ -47,14 +47,14 @@ try {
 
 
 } catch (err) {
-  browser.runtime.sendMessage('hide_iframe')
   console.error(err)
+  _hideIframe()
 }
 
 function initIFrame() {
   document.getElementById('lnbits-overlay')
     .addEventListener('click', function () {
-      browser.runtime.sendMessage('hide_iframe')
+      _hideIframe()
     });
 
 
@@ -62,4 +62,14 @@ function initIFrame() {
     // remove any quasar injected background color
     document.body.style.background = 'none';
   })
+}
+
+async function _hideIframe() {
+  try {
+    await browser.runtime.sendMessage('hide_iframe')
+  } catch (err) {
+    console.error(err)
+    const overalyDiv = document.getElementById('lnbits-overlay')
+    overalyDiv && overalyDiv.remove()
+  }
 }
