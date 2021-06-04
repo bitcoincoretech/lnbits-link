@@ -453,7 +453,55 @@ export default {
       }
     },
     createInvoice: async function () {
-      console.log('######### createInvoice')
+      try {
+        this.showPaymentInProgressCard()
+        const response = await lnbitsApi(this.serverUrl).createInvoice(
+          this.activeWallet,
+          this.receive.data.amount,
+          this.receive.data.memo,
+          this.receive.lnurl && this.receive.lnurl.callback
+        )
+
+        this.receive.status = 'success'
+        this.receive.paymentReq = response.data.payment_request
+        this.receive.paymentHash = response.data.payment_hash
+
+        if (response.data.lnurl_response !== null) {
+          if (response.data.lnurl_response === false) {
+            response.data.lnurl_response = `Unable to connect`
+          }
+
+          if (typeof response.data.lnurl_response === 'string') {
+            this.showErrorCard(
+              response.data.lnurl_response,
+              `${this.receive.lnurl.domain} lnurl-withdraw call failed.`
+            )
+            return
+          }
+          if (response.data.lnurl_response === true) {
+            this.showPaymentInProgressCard(`Invoice sent to ${this.receive.lnurl.domain}!`)
+          }
+        }
+
+        clearInterval(this.receive.paymentChecker)
+        setTimeout(() => {
+          clearInterval(this.receive.paymentChecker)
+        }, 40000)
+        this.receive.paymentChecker = setInterval(async () => {
+          const hash = response.data.payment_hash
+          const paymentResponse = await lnbitsApi(this.serverUrl).getPayment(
+            this.activeWallet,
+            hash
+          )
+
+          if (paymentResponse.data.paid) {
+            clearInterval(this.receive.paymentChecker)
+            this.showPaymentCompentedCard(JSON.stringify(paymentResponse.data))
+          }
+        }, 2000)
+      } catch (err) {
+        this.showErrorCard(err, 'Cannot create invoice!')
+      }
     },
     gotoOptionsPage() {
       this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
@@ -466,10 +514,10 @@ export default {
       this.error.title = title
       this.error.message = (err.message || err) + '.'
     },
-    showPaymentInProgressCard() {
+    showPaymentInProgressCard(message = 'Processing payment...') {
       this.currentView = 'paymentStatus'
       this.paymentDetails.isPayed = false
-      this.paymentDetails.message = 'Processing payment...'
+      this.paymentDetails.message = message
       this.paymentDetails.details = ''
     },
     showPaymentCompentedCard(details = '') {
