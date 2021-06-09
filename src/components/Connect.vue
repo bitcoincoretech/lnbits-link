@@ -281,7 +281,7 @@ export default {
 
         await configSvc.setUserId(user.id)
         await configSvc.setWalletId(user.wallets[0].id)
-        await configSvc.setUserId(user)
+        await configSvc.setUser(user)
         this.$router.push({
           path: 'lnbits',
         })

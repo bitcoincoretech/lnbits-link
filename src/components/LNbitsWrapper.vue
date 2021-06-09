@@ -61,9 +61,9 @@ export default {
   async mounted() {
     this.serverUrl = await configSvc.getServerUrl()
     this.user = await configSvc.getUser()
-    const userId = (this.user && this.user.id) || ''
+    const userId = await configSvc.getUserId()
 
-    const walletId = (await configSvc.getWalletId()) || ''
+    const walletId = await configSvc.getWalletId()
 
     // TODO: no user/serverUrl found
 
@@ -78,7 +78,7 @@ export default {
 
     const iFrame = document.getElementById('lnbits-site')
 
-    iFrame.src = `${this.serverUrl}/wallet?usr=${userId}&wal=${walletId}`
+    iFrame.src = `${this.serverUrl}/wallet?usr=${userId}&wal=${walletId || ''}`
     iFrame.addEventListener('load', function () {
       closeLoading()
     })
