@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import Vue from 'vue'
 import VueRouter from 'vuerouter'
 import Quasar from 'quasar'
+import configSvc from '../../services/config.svc'
 import App from '../../components/App.vue'
 import routes from './routes'
 
@@ -15,18 +16,9 @@ async function init(elementId = 'app') {
     routes
   })
 
-  // TODO: extract
-  const serverResult = await browser.storage.sync.get({
-    serverUrl: ''
-  })
-  const serverUrl = serverResult.serverUrl
+  const isConfigValid = await configSvc.isConfigValid()
 
-  const result = await browser.storage.sync.get({
-    user: ''
-  })
-  const user = result.user
-
-  if (serverUrl && user && user.id && user.wallets && user.wallets.length) {
+  if (isConfigValid) {
     router.replace({
       path: 'lnbits',
     })
