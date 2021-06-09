@@ -133,6 +133,7 @@
 
 <script>
 import lnBitsConnect from '../utils/lnbits-scraper'
+import configSvc from '../services/config.svc'
 
 export default {
   name: 'connect',
@@ -148,16 +149,25 @@ export default {
     }
   },
   async mounted() {
-    this.userId = await this.getUserId()
-    this.walletId = await this.getWalletId()
-    this.userData = await this.getUserData()
-    this.serverUrl = await this.getServerUrl()
+    try {
+      this.userId = await configSvc.getUserId()
+      this.walletId = await configSvc.getWalletId()
+      this.userData = await configSvc.getUser()
+      this.serverUrl = await configSvc.getServerUrl()
+    } catch (err) {
+      console.error(err)
+      this.$q.notify({
+        type: 'negative',
+        message: 'Unexpected error!',
+        caption: `Cannot init Connect View!`,
+      })
+    }
   },
   watch: {
     userId: {
       async handler(val) {
         try {
-          await this.$browser.storage.sync.set({ userId: val })
+          await configSvc.setUserId(val)
         } catch (error) {
           console.error(error)
         }
@@ -166,7 +176,7 @@ export default {
     walletId: {
       async handler(val) {
         try {
-          await this.$browser.storage.sync.set({ walletId: val })
+          await configSvc.setWalletId(val)
         } catch (error) {
           console.error(error)
         }
@@ -185,10 +195,10 @@ export default {
             this.userId = url.searchParams.get('usr')
           }
 
-          await this.$browser.storage.sync.set({ serverUrl: url.origin || '' })
+          await configSvc.setServerUrl(url.origin || '')
         } catch (err) {
           console.log(err)
-          await this.$browser.storage.sync.set({ serverUrl: '' })
+          await configSvc.setServerUrl('')
         }
       },
     },
@@ -199,44 +209,9 @@ export default {
     },
   },
   methods: {
-    async getUserId() {
-      try {
-        const result = await this.$browser.storage.sync.get({ userId: '' })
-        return result.userId
-      } catch (error) {
-        // TODO notify
-        console.error(error)
-      }
-    },
-    async getWalletId() {
-      try {
-        const result = await this.$browser.storage.sync.get({ walletId: '' })
-        return result.walletId
-      } catch (error) {
-        // TODO notify
-        console.error(error)
-      }
-    },
-    async getUserData() {
-      try {
-        const result = await this.$browser.storage.sync.get({ user: '' })
-        return result.user
-      } catch (error) {
-        // TODO notify
-        console.error(error)
-      }
-    },
-    async getServerUrl() {
-      try {
-        const result = await this.$browser.storage.sync.get({ serverUrl: '' })
-        return result.serverUrl || 'https://lnbits.com'
-      } catch (error) {
-        console.error(error)
-      }
-    },
     async connect() {
       try {
-        const serverUrl = await this.getServerUrl()
+        const serverUrl = await configSvc.getServerUrl()
 
         const user = await lnBitsConnect.checkUser(serverUrl, this.userId)
         if (!user || !user.id || !user.wallets || !user.wallets.length) {
@@ -259,10 +234,9 @@ export default {
           })
           return
         }
-        await this.$browser.storage.sync.set({ walletId: wallet.id })
+        await configSvc.setWalletId(wallet.id)
+        await configSvc.setUser(user)
 
-        // TODO extract services, show active wallet NAME on dialogs
-        await this.$browser.storage.sync.set({ user })
         this.$router.push({
           path: 'lnbits',
         })
@@ -305,11 +279,11 @@ export default {
           return
         }
 
-        await this.$browser.storage.sync.set({ userId: user.id })
-        await this.$browser.storage.sync.set({ walletId: user.wallets[0].id })
-        await this.$browser.storage.sync.set({ user })
+        await configSvc.setUserId(user.id)
+        await configSvc.setWalletId(user.wallets[0].id)
+        await configSvc.setUserId(user)
         this.$router.push({
-          path: 'lnbits'
+          path: 'lnbits',
         })
       } catch (err) {
         console.error(err)
@@ -329,9 +303,7 @@ export default {
       this.userId = ''
       this.walletId = ''
       this.userData = {}
-      await this.$browser.storage.sync.set({ userId: '' })
-      await this.$browser.storage.sync.set({ walletId: '' })
-      await this.$browser.storage.sync.set({ user: {} })
+      await configSvc.cleanConfig()
     },
     async cancelDisconnect() {
       this.requestDisconnect = false

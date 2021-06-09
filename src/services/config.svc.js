@@ -57,6 +57,13 @@ async function getActiveWallet() {
     return activeWallet || user.wallets[0];
 }
 
+async function cleanConfig() {
+    await setServerUrl('')
+    await setUserId('')
+    await setWalletId('')
+    await setUser({})
+}
+
 async function isConfigValid() {
     const serverUrl = await getServerUrl()
     const user = await getUser()
@@ -74,5 +81,6 @@ export default {
     getWalletId,
     setWalletId,
     getActiveWallet,
+    cleanConfig,
     isConfigValid,
 }
