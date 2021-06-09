@@ -48,6 +48,8 @@
 <script>
 // TODO: can replace with this.$browser?
 import browser from 'webextension-polyfill'
+import configSvc from '../services/config.svc'
+
 export default {
   name: 'lnbits-wrapper',
   data() {
@@ -57,21 +59,11 @@ export default {
     }
   },
   async mounted() {
-    const serverResult = await browser.storage.sync.get({
-      serverUrl: '',
-    })
-    this.serverUrl = serverResult.serverUrl
-
-    const result = await browser.storage.sync.get({
-      user: '',
-    })
-    this.user = result.user
+    this.serverUrl = await configSvc.getServerUrl()
+    this.user = await configSvc.getUser()
     const userId = (result.user && result.user.id) || ''
 
-    const walletResult = await browser.storage.sync.get({
-      walletId: '',
-    })
-    const walletId = walletResult.walletId || ''
+    const walletId = (await configSvc.getWalletId()) || ''
 
     // TODO: no user/serverUrl found
 
