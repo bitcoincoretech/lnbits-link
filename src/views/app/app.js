@@ -29,10 +29,6 @@ async function init(elementId = 'app') {
   if (serverUrl && user && user.id && user.wallets && user.wallets.length) {
     router.replace({
       path: 'lnbits',
-      query: {
-        userId: user.id,
-        walletId: user.wallets[0].id
-      },
     })
   } else {
     router.replace('/connect')

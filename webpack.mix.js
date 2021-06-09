@@ -19,6 +19,7 @@ mix
       },
     },
   })
+  .sourceMaps(true, 'source-map')
   .copy('src/manifest.json', 'dist/')
   .copyDirectory('src/assets/img', 'dist/img')
   .copyDirectory('src/assets/fonts', 'dist/fonts')
