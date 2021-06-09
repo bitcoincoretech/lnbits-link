@@ -1,7 +1,34 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <div v-if="showInvoiceDetails"></div>
+      <div v-if="showInvoiceDetails">
+        <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
+        <q-separator class="q-my-sm"></q-separator>
+        <p class="text-wrap">
+          <strong>Requested By:</strong> {{ requestedBy }}<br />
+          <strong>Description:</strong> {{ parse.invoice.description }}<br />
+          <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
+          <strong>Hash:</strong> {{ parse.invoice.hash }}
+        </p>
+        <q-expansion-item group="extras" icon="crop_free" label="QR Code">
+          <qrcode :value="parse.data.request" class="rounded-borders"></qrcode>
+        </q-expansion-item>
+
+        <div v-if="!hasAccount" class="row q-mt-lg">
+          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage"
+            >No Account Found!</q-btn
+          >
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+        <div v-else-if="canPay" class="row q-mt-lg">
+          <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+        <div v-else class="row q-mt-lg">
+          <q-btn unelevated disabled color="yellow" text-color="black">Not enough funds!</q-btn>
+          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
+        </div>
+      </div>
       <div v-else-if="showLnurlPayDetais">
         <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
           <b>{{ parse.lnurlpay.domain }}</b> is requesting
