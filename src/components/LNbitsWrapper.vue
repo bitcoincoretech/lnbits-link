@@ -61,7 +61,7 @@ export default {
   async mounted() {
     this.serverUrl = await configSvc.getServerUrl()
     this.user = await configSvc.getUser()
-    const userId = (result.user && result.user.id) || ''
+    const userId = (this.user && this.user.id) || ''
 
     const walletId = (await configSvc.getWalletId()) || ''
 
