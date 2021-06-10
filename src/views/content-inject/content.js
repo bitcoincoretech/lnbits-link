@@ -7,6 +7,7 @@ import Options from '../../components/Options.vue'
 import InvoiceDetails from '../../components/InvoiceDetails.vue'
 import PaymentStatus from '../../components/PaymentStatus.vue'
 import LnurlPay from '../../components/LnurlPay.vue'
+import LnurlWithdraw from '../../components/LnurlWithdraw.vue'
 import ErrorCard from '../../components/ErrorCard.vue'
 
 import routes from './routes'
@@ -22,6 +23,7 @@ try {
   Vue.component('invoice-details', InvoiceDetails)
   Vue.component('payment-status', PaymentStatus)
   Vue.component('lnurl-pay', LnurlPay)
+  Vue.component('lnurl-withdraw', LnurlWithdraw)
   Vue.component('error-card', ErrorCard)
 
 
