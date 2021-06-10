@@ -323,59 +323,70 @@ export default {
       }
 
       if (this.parse.data.request.toLowerCase().startsWith('lnurl1')) {
-        try {
-          const response = await lnbitsApi(this.serverUrl).request(
-            'GET',
-            '/api/v1/lnurlscan/' + this.parse.data.request,
-            this.activeWallet.adminkey
-          )
-          let data = response.data
-          if (data.status === 'ERROR') {
-            this.showErrorCard(data.reason, 'Cannot decode request!')
-            return
-          }
-
-          if (data.kind === 'pay') {
-            this.currentView = 'lnurlPay'
-            this.parse.lnurlpay = Object.freeze(data)
-            this.parse.data.amount = data.minSendable / 1000
-          } else if (data.kind === 'auth') {
-            this.currentView = 'lnurlAuth'
-            this.parse.lnurlauth = Object.freeze(data)
-          } else if (data.kind === 'withdraw') {
-            this.currentView = 'lnurlWithdraw'
-            this.receive.status = 'pending'
-            this.receive.paymentReq = null
-            this.receive.paymentHash = null
-            this.receive.data.amount = data.maxWithdrawable / 1000
-            this.receive.data.memo = data.defaultDescription
-            this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
-            this.receive.lnurl = {
-              domain: data.domain,
-              callback: data.callback,
-              fixed: data.fixed,
-            }
-          }
-        } catch (err) {
-          this.showErrorCard(err)
-        }
+        this.handleLnurlRequest()
         return
       }
 
-      let invoice
+      const invoice = this.extractBolt11Invoice()
+      if (!invoice) {
+        return
+      }
+      console.log('invoice', invoice)
+      console.log('cleanInvoice', cleanInvoice)
+      const cleanInvoice = this.enrichInvoiceDataFromTags(invoice)
+      this.parse.invoice = Object.freeze(cleanInvoice)
+    },
+    handleLnurlRequest: async function () {
       try {
-        invoice = bolt11.decode(this.parse.data.request)
+        const response = await lnbitsApi(this.serverUrl).request(
+          'GET',
+          '/api/v1/lnurlscan/' + this.parse.data.request,
+          this.activeWallet.adminkey
+        )
+        let data = response.data
+        if (data.status === 'ERROR') {
+          this.showErrorCard(data.reason, 'Cannot decode request!')
+          return
+        }
+
+        if (data.kind === 'pay') {
+          this.currentView = 'lnurlPay'
+          this.parse.lnurlpay = Object.freeze(data)
+          this.parse.data.amount = data.minSendable / 1000
+        } else if (data.kind === 'auth') {
+          this.currentView = 'lnurlAuth'
+          this.parse.lnurlauth = Object.freeze(data)
+        } else if (data.kind === 'withdraw') {
+          this.currentView = 'lnurlWithdraw'
+          this.receive.status = 'pending'
+          this.receive.paymentReq = null
+          this.receive.paymentHash = null
+          this.receive.data.amount = data.maxWithdrawable / 1000
+          this.receive.data.memo = data.defaultDescription
+          this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
+          this.receive.lnurl = {
+            domain: data.domain,
+            callback: data.callback,
+            fixed: data.fixed,
+          }
+        }
+      } catch (err) {
+        this.showErrorCard(err)
+      }
+    },
+    extractBolt11Invoice: function () {
+      try {
         this.currentView = 'invoice'
+        return bolt11.decode(this.parse.data.request)
       } catch (err) {
         this.showErrorCard(err, 'Cannot decode BOLT11 invoice!')
-        return
       }
-
-      let cleanInvoice = {
+    },
+    enrichInvoiceDataFromTags: function (invoice) {
+      const cleanInvoice = {
         msat: invoice.millisatoshis,
         sat: invoice.millisatoshis / 1000,
-        fsat: invoice.millisatoshis / 1000,
-        // fsat: LNbits.utils.formatSat(invoice.millisatoshis / 1000), // TODO
+        fsat: uiUtils.formatSat(invoice.millisatoshis / 1000),
         expireDate: invoice.timeExpireDateString,
       }
 
@@ -393,7 +404,7 @@ export default {
         }
       })
 
-      this.parse.invoice = Object.freeze(cleanInvoice)
+      return cleanInvoice
     },
     fetchBalance: async function () {
       // TODO: handle http status >=400
