@@ -8,62 +8,13 @@
         v-bind:paymentRequest="parse.data.request"
       >
       </invoice-details>
-      <div v-else-if="showLnurlPayDetais">
-        <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
-          <b>{{ parse.lnurlpay.domain }}</b> is requesting
-          {{ parse.lnurlpay.maxSendable | msatoshiFormat }} sat
-          <span v-if="parse.lnurlpay.commentAllowed > 0">
-            <br />
-            and a {{ parse.lnurlpay.commentAllowed }}-char comment
-          </span>
-        </p>
-        <p v-else class="q-my-none text-h6 text-center">
-          <b>{{ parse.lnurlpay.domain }}</b> is requesting <br />
-          between <b>{{ parse.lnurlpay.minSendable | msatoshiFormat }}</b> and
-          <b>{{ parse.lnurlpay.maxSendable | msatoshiFormat }}</b> sat
-          <span v-if="parse.lnurlpay.commentAllowed > 0">
-            <br />
-            and a {{ parse.lnurlpay.commentAllowed }}-char comment
-          </span>
-        </p>
-        <q-separator class="q-my-sm"></q-separator>
-        <div class="row">
-          <p class="col text-justify text-italic">
-            {{ parse.lnurlpay.description }}
-          </p>
-          <p class="col-4 q-pl-md" v-if="parse.lnurlpay.image">
-            <q-img :src="parse.lnurlpay.image" />
-          </p>
-        </div>
-        <div class="row">
-          <div class="col">
-            <q-input
-              filled
-              dense
-              v-model.number="parse.data.amount"
-              type="number"
-              label="Amount (sat) *"
-              :min="parse.lnurlpay.minSendable / 1000"
-              :max="parse.lnurlpay.maxSendable / 1000"
-              :readonly="parse.lnurlpay.fixed"
-            ></q-input>
-          </div>
-          <div class="col-8 q-pl-md" v-if="parse.lnurlpay.commentAllowed > 0">
-            <q-input
-              filled
-              dense
-              v-model="parse.data.comment"
-              :type="parse.lnurlpay.commentAllowed > 64 ? 'textarea' : 'text'"
-              label="Comment (optional)"
-              :maxlength="parse.lnurlpay.commentAllowed"
-            ></q-input>
-          </div>
-        </div>
-        <div class="row q-mt-lg">
-          <q-btn unelevated color="deep-purple" @click="payLnurl">Send satoshis</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-      </div>
+      <lnurl-pay
+        v-else-if="showLnurlPayDetails"
+        :lnurlpay="parse.lnurlpay"
+        :amount="parse.data.amount"
+        :comment="parse.data.comment"
+      >
+      </lnurl-pay>
       <div v-else-if="showLnurlWithdrawDetails">
         <div v-if="!receive.paymentReq">
           <q-form @submit="createInvoice" class="q-gutter-md">
@@ -258,7 +209,7 @@ export default {
     showInvoiceDetails: function () {
       return this.currentView === 'invoice'
     },
-    showLnurlPayDetais: function () {
+    showLnurlPayDetails: function () {
       return this.currentView === 'lnurlPay'
     },
     showLnurlWithdrawDetails: function () {
@@ -274,11 +225,7 @@ export default {
       return this.currentView === 'paymentStatus'
     },
   },
-  filters: {
-    msatoshiFormat: function (value) {
-      return uiUtils.formatSat(value / 1000)
-    },
-  },
+
   methods: {
     decodeRequest: async function () {
       const paymentRequest = (this.parse.data.request || '').toLowerCase()
@@ -299,8 +246,7 @@ export default {
       if (!invoice) {
         return
       }
-      console.log('invoice', invoice)
-      console.log('cleanInvoice', cleanInvoice)
+
       const cleanInvoice = this.enrichInvoiceDataFromTags(invoice)
       this.parse.invoice = Object.freeze(cleanInvoice)
     },
@@ -375,63 +321,6 @@ export default {
       return cleanInvoice
     },
 
-    payLnurl: async function () {
-      try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).payLnurl(
-          this.activeWallet,
-          this.parse.lnurlpay.callback,
-          this.parse.lnurlpay.description_hash,
-          this.parse.data.amount * 1000,
-          this.parse.lnurlpay.description.slice(0, 120),
-          this.parse.data.comment
-        )
-
-        clearInterval(this.parse.paymentChecker)
-        setTimeout(() => {
-          clearInterval(this.parse.paymentChecker)
-        }, 40000)
-        this.parse.paymentChecker = setInterval(async () => {
-          try {
-            const res = await lnbitsApi(this.serverUrl).getPayment(
-              this.activeWallet,
-              response.data.payment_hash
-            )
-            if (res.data.paid) {
-              clearInterval(this.parse.paymentChecker)
-
-              // show lnurlpay success action
-              if (response.data.success_action) {
-                switch (response.data.success_action.tag) {
-                  case 'url':
-                    const actionDescription = `<strong>Message: </strong> ${response.data.success_action.description}`
-                    const actionLink = `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`
-                    this.showPaymentCompentedCard(
-                      `<p class="text-wrap">${actionDescription}<br>${actionLink}</p>`
-                    )
-                    break
-                  case 'message':
-                    const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
-                    this.showPaymentCompentedCard(message)
-                    break
-                  default:
-                    const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${
-                      response.data.preimage || ''
-                    } </p>`
-                    this.showPaymentCompentedCard(preimageHtml)
-                    break
-                }
-              }
-            }
-          } catch (err) {
-            this.showErrorCard(err, 'Cannot check LNURL payment!')
-            clearInterval(this.parse.paymentChecker)
-          }
-        }, 2000)
-      } catch (err) {
-        this.showErrorCard(err, 'Cannot pay LNURL invoice!')
-      }
-    },
     createInvoice: async function () {
       try {
         this.showPaymentInProgressCard()

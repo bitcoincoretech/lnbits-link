@@ -6,6 +6,7 @@ import Quasar from 'quasar'
 import Options from '../../components/Options.vue'
 import InvoiceDetails from '../../components/InvoiceDetails.vue'
 import PaymentStatus from '../../components/PaymentStatus.vue'
+import LnurlPay from '../../components/LnurlPay.vue'
 import ErrorCard from '../../components/ErrorCard.vue'
 
 import routes from './routes'
@@ -20,6 +21,7 @@ try {
   Vue.component('qrcode', VueQrcode)
   Vue.component('invoice-details', InvoiceDetails)
   Vue.component('payment-status', PaymentStatus)
+  Vue.component('lnurl-pay', LnurlPay)
   Vue.component('error-card', ErrorCard)
 
 
