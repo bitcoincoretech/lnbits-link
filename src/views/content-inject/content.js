@@ -4,6 +4,10 @@ import VueRouter from 'vuerouter'
 import VueQrcode from 'vueQrcode'
 import Quasar from 'quasar'
 import Options from '../../components/Options.vue'
+import InvoiceDetails from '../../components/InvoiceDetails.vue'
+import PaymentStatus from '../../components/PaymentStatus.vue'
+import ErrorCard from '../../components/ErrorCard.vue'
+
 import routes from './routes'
 
 
@@ -14,6 +18,9 @@ try {
   Vue.use(VueRouter)
   Vue.use(Quasar)
   Vue.component('qrcode', VueQrcode)
+  Vue.component('invoice-details', InvoiceDetails)
+  Vue.component('payment-status', PaymentStatus)
+  Vue.component('error-card', ErrorCard)
 
 
   const router = new VueRouter({

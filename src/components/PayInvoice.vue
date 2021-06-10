@@ -1,34 +1,13 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <div v-if="showInvoiceDetails">
-        <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
-        <q-separator class="q-my-sm"></q-separator>
-        <p class="text-wrap">
-          <strong>Requested By:</strong> {{ requestedBy }}<br />
-          <strong>Description:</strong> {{ parse.invoice.description }}<br />
-          <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
-          <strong>Hash:</strong> {{ parse.invoice.hash }}
-        </p>
-        <q-expansion-item group="extras" icon="crop_free" label="QR Code">
-          <qrcode :value="parse.data.request" class="rounded-borders"></qrcode>
-        </q-expansion-item>
-
-        <div v-if="!hasAccount" class="row q-mt-lg">
-          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage"
-            >No Account Found!</q-btn
-          >
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-        <div v-else-if="canPay" class="row q-mt-lg">
-          <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-        <div v-else class="row q-mt-lg">
-          <q-btn unelevated disabled color="yellow" text-color="black">Not enough funds!</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-      </div>
+      <invoice-details
+        v-if="showInvoiceDetails"
+        v-bind:invoice="parse.invoice"
+        v-bind:requestedBy="requestedBy"
+        v-bind:paymentRequest="parse.data.request"
+      >
+      </invoice-details>
       <div v-else-if="showLnurlPayDetais">
         <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
           <b>{{ parse.lnurlpay.domain }}</b> is requesting
@@ -272,21 +251,10 @@ export default {
           memo: '',
         },
       },
-      balance: 0,
       requestedBy: '',
     }
   },
   computed: {
-    canPay: function () {
-      if (!this.parse.invoice) return false
-      return this.parse.invoice.sat <= this.balance
-    },
-    hasAccount: function () {
-      if (this.serverUrl && this.activeWallet && this.activeWallet.id) {
-        return true
-      }
-      return false
-    },
     showInvoiceDetails: function () {
       return this.currentView === 'invoice'
     },
@@ -406,38 +374,7 @@ export default {
 
       return cleanInvoice
     },
-    fetchBalance: async function () {
-      // TODO: handle http status >=400
-      const response = await lnbitsApi(this.serverUrl).getWallet(this.activeWallet)
-      this.balance = Math.round(response.data.balance / 1000)
-    },
-    payInvoice: async function () {
-      try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).payInvoice(
-          this.activeWallet,
-          this.parse.data.request
-        )
-        clearInterval(this.parse.paymentChecker)
-        setTimeout(() => {
-          clearInterval(this.parse.paymentChecker)
-        }, 40000)
-        const payResponse = await lnbitsApi(this.serverUrl).getPayment(
-          this.activeWallet,
-          response.data.payment_hash
-        )
 
-        this.parse.paymentChecker = setInterval(() => {
-          if (payResponse.data.paid) {
-            clearInterval(this.parse.paymentChecker)
-            const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
-            this.showPaymentCompentedCard(preimageHtml)
-          }
-        }, 1000)
-      } catch (err) {
-        this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
-      }
-    },
     payLnurl: async function () {
       try {
         this.showPaymentInProgressCard()
@@ -572,9 +509,7 @@ export default {
         }
       }
     },
-    gotoOptionsPage() {
-      this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
-    },
+
     closeDialog() {
       this.$browser.runtime.sendMessage('hide_iframe')
     },
@@ -608,7 +543,6 @@ export default {
       if (isConfigValid) {
         this.activeWallet = await configSvc.getActiveWallet()
         this.decodeRequest()
-        this.fetchBalance()
       } else {
         this.$q.notify({
           type: 'negative',
