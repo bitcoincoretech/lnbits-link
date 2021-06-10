@@ -27,9 +27,9 @@
     <div v-else>
       <payment-status
         v-if="currentView === 'authStatus'"
-        :isPayed="withdrawStatus.isPayed"
-        :message="withdrawStatus.message"
-        :details="withdrawStatus.details"
+        :isPayed="authStatus.isPayed"
+        :message="authStatus.message"
+        :details="authStatus.details"
       ></payment-status>
       <error-card
         v-else-if="currentView === 'error'"
@@ -47,15 +47,15 @@
 </template>
 <script>
 import lnbitsApi from '../services/lnbits-api.svc'
+import configSvc from '../services/config.svc'
 
 export default {
   name: 'lnurl-auth',
   props: {
-    lnurlauth: object,
+    lnurlauth: Object,
   },
   data() {
     return {
-      paymentChecker: null,
       currentView: 'auth',
       authStatus: {
         isPayed: false,
@@ -68,6 +68,10 @@ export default {
         details: '',
       },
     }
+  },
+  mounted: async function () {
+    this.serverUrl = await configSvc.getServerUrl()
+    this.activeWallet = await configSvc.getActiveWallet()
   },
   methods: {
     authLnurl: async function () {

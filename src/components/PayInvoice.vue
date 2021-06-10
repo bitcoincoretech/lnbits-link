@@ -17,30 +17,6 @@
       </lnurl-pay>
       <lnurl-withdraw v-else-if="showLnurlWithdrawDetails" :receive="receive"> </lnurl-withdraw>
       <lnurl-auth v-else-if="showLnurlAuthDetails" :lnurlauth="parse.lnurlauth"> </lnurl-auth>
-      <div v-else-if="showPaymentStatus">
-        <q-card-section dark bordered>
-          <p class="text-center">
-            <q-icon v-if="paymentDetails.isPayed" name="check_circle" size="5.5em" color="green" />
-            <q-spinner-bars v-else color="purple" size="5.5em" />
-          </p>
-          <p class="q-my-none text-h6 text-center">{{ paymentDetails.message }}</p>
-          <q-expansion-item
-            v-if="paymentDetails.details && paymentDetails.details.length"
-            group="extras"
-            icon="info"
-            class="bg-yellow-1"
-            label="Details"
-          >
-            <span v-html="paymentDetails.details"></span>
-          </q-expansion-item>
-        </q-card-section>
-
-        <div class="row q-mt-lg">
-          <q-space />
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
-          <q-space />
-        </div>
-      </div>
       <div v-else-if="showErrorDetais">
         <q-card-section dark bordered class="bg-red-5">
           <div class="text-h6">{{ error.title }}</div>
@@ -103,11 +79,6 @@ export default {
         },
         paymentChecker: null,
       },
-      paymentDetails: {
-        isPayed: false,
-        message: '...',
-        details: '',
-      },
       receive: {
         show: false,
         status: 'pending',
@@ -138,9 +109,6 @@ export default {
     },
     showErrorDetais: function () {
       return this.currentView === 'error'
-    },
-    showPaymentStatus: function () {
-      return this.currentView === 'paymentStatus'
     },
   },
 
@@ -238,25 +206,13 @@ export default {
 
       return cleanInvoice
     },
-    closeDialog() {
+    closeDialog: function () {
       this.$browser.runtime.sendMessage('hide_iframe')
     },
-    showErrorCard(err, title = 'Error') {
+    showErrorCard: function (err, title = 'Error') {
       this.currentView = 'error'
       this.error.title = title
       this.error.message = (err.message || err) + '.'
-    },
-    showPaymentInProgressCard(message = 'Processing payment...') {
-      this.currentView = 'paymentStatus'
-      this.paymentDetails.isPayed = false
-      this.paymentDetails.message = message
-      this.paymentDetails.details = ''
-    },
-    showPaymentCompentedCard(details = '') {
-      this.currentView = 'paymentStatus'
-      this.paymentDetails.isPayed = true
-      this.paymentDetails.message = 'Success!'
-      this.paymentDetails.details = details
     },
   },
   mounted: async function () {
@@ -272,11 +228,10 @@ export default {
         this.activeWallet = await configSvc.getActiveWallet()
         this.decodeRequest()
       } else {
-        this.$q.notify({
-          type: 'negative',
-          message: 'No user or wallet found!',
-          caption: `Please check that you are connected to a LNbits server.`,
-        })
+        this.showErrorCard(
+          'No user or wallet found!',
+          'Please check that you are connected to a LNbits server.'
+        )
       }
     } catch (err) {
       console.error(err)
