@@ -1,198 +1,22 @@
 <template>
   <q-dialog ref="dialog" v-model="showDialog" @hide="closeDialog">
     <q-card class="q-pa-lg q-pt-xl lnbits__dialog-card">
-      <div v-if="showInvoiceDetails">
-        <h6 class="q-my-none">{{ parse.invoice.fsat }} sat</h6>
-        <q-separator class="q-my-sm"></q-separator>
-        <p class="text-wrap">
-          <strong>Requested By:</strong> {{ requestedBy }}<br />
-          <strong>Description:</strong> {{ parse.invoice.description }}<br />
-          <strong>Expire date:</strong> {{ parse.invoice.expireDate }}<br />
-          <strong>Hash:</strong> {{ parse.invoice.hash }}
-        </p>
-        <q-expansion-item group="extras" icon="crop_free" label="QR Code">
-          <qrcode :value="parse.data.request" class="rounded-borders"></qrcode>
-        </q-expansion-item>
-
-        <div v-if="!hasAccount" class="row q-mt-lg">
-          <q-btn unelevated color="yellow" text-color="black" @click="gotoOptionsPage"
-            >No Account Found!</q-btn
-          >
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-        <div v-else-if="canPay" class="row q-mt-lg">
-          <q-btn unelevated color="deep-purple" @click="payInvoice">Pay</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-        <div v-else class="row q-mt-lg">
-          <q-btn unelevated disabled color="yellow" text-color="black">Not enough funds!</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-      </div>
-      <div v-else-if="showLnurlPayDetais">
-        <p v-if="parse.lnurlpay.fixed" class="q-my-none text-h6">
-          <b>{{ parse.lnurlpay.domain }}</b> is requesting
-          {{ parse.lnurlpay.maxSendable | msatoshiFormat }} sat
-          <span v-if="parse.lnurlpay.commentAllowed > 0">
-            <br />
-            and a {{ parse.lnurlpay.commentAllowed }}-char comment
-          </span>
-        </p>
-        <p v-else class="q-my-none text-h6 text-center">
-          <b>{{ parse.lnurlpay.domain }}</b> is requesting <br />
-          between <b>{{ parse.lnurlpay.minSendable | msatoshiFormat }}</b> and
-          <b>{{ parse.lnurlpay.maxSendable | msatoshiFormat }}</b> sat
-          <span v-if="parse.lnurlpay.commentAllowed > 0">
-            <br />
-            and a {{ parse.lnurlpay.commentAllowed }}-char comment
-          </span>
-        </p>
-        <q-separator class="q-my-sm"></q-separator>
-        <div class="row">
-          <p class="col text-justify text-italic">
-            {{ parse.lnurlpay.description }}
-          </p>
-          <p class="col-4 q-pl-md" v-if="parse.lnurlpay.image">
-            <q-img :src="parse.lnurlpay.image" />
-          </p>
-        </div>
-        <div class="row">
-          <div class="col">
-            <q-input
-              filled
-              dense
-              v-model.number="parse.data.amount"
-              type="number"
-              label="Amount (sat) *"
-              :min="parse.lnurlpay.minSendable / 1000"
-              :max="parse.lnurlpay.maxSendable / 1000"
-              :readonly="parse.lnurlpay.fixed"
-            ></q-input>
-          </div>
-          <div class="col-8 q-pl-md" v-if="parse.lnurlpay.commentAllowed > 0">
-            <q-input
-              filled
-              dense
-              v-model="parse.data.comment"
-              :type="parse.lnurlpay.commentAllowed > 64 ? 'textarea' : 'text'"
-              label="Comment (optional)"
-              :maxlength="parse.lnurlpay.commentAllowed"
-            ></q-input>
-          </div>
-        </div>
-        <div class="row q-mt-lg">
-          <q-btn unelevated color="deep-purple" @click="payLnurl">Send satoshis</q-btn>
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-        </div>
-      </div>
-      <div v-else-if="showLnurlWithdrawDetails">
-        <div v-if="!receive.paymentReq">
-          <q-form @submit="createInvoice" class="q-gutter-md">
-            <p v-if="receive.lnurl" class="text-h6 text-center q-my-none">
-              <b>{{ receive.lnurl.domain }}</b> is requesting an invoice:
-            </p>
-            <q-input
-              filled
-              dense
-              v-model.number="receive.data.amount"
-              type="number"
-              label="Amount (sat) *"
-              :min="receive.minMax[0]"
-              :max="receive.minMax[1]"
-              :readonly="receive.lnurl && receive.lnurl.fixed"
-            ></q-input>
-            <q-input
-              filled
-              dense
-              v-model.trim="receive.data.memo"
-              label="Memo"
-              placeholder="LNbits invoice"
-            ></q-input>
-            <div v-if="receive.status == 'pending'" class="row q-mt-lg">
-              <q-btn
-                unelevated
-                color="deep-purple"
-                :disable="
-                  receive.data.memo == null ||
-                  receive.data.amount == null ||
-                  receive.data.amount <= 0
-                "
-                type="submit"
-              >
-                <span v-if="receive.lnurl"> Withdraw</span>
-                <span v-else> Create invoice </span>
-              </q-btn>
-              <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-            </div>
-            <q-spinner-bars v-if="receive.status == 'loading'" color="purple" size="5.5em" />
-          </q-form>
-        </div>
-        <div v-else>
-          <div class="text-center q-mb-lg">
-            <a :href="'lightning:' + receive.paymentReq">
-              <q-responsive :ratio="1" class="q-mx-xl">
-                <qrcode
-                  :value="receive.paymentReq"
-                  :options="{ width: 340 }"
-                  class="rounded-borders"
-                ></qrcode>
-              </q-responsive>
-            </a>
-          </div>
-          <div class="row q-mt-lg">
-            <q-btn outline color="grey" @click="copyText(receive.paymentReq)">Copy invoice</q-btn>
-            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Close</q-btn>
-          </div>
-        </div>
-      </div>
-      <div v-else-if="showLnurlAuthDetails">
-        <q-form @submit="authLnurl" class="q-gutter-md">
-          <p class="q-my-none text-h6">
-            Authenticate with <b>{{ parse.lnurlauth.domain }}</b
-            >?
-          </p>
-          <q-separator class="q-my-sm"></q-separator>
-          <p>
-            For every website and for every LNbits wallet, a new keypair will be deterministically
-            generated so your identity can't be tied to your LNbits wallet or linked across
-            websites. No other data will be shared with {{ parse.lnurlauth.domain }}.
-          </p>
-          <p>
-            Your public key for <b>{{ parse.lnurlauth.domain }}</b> is:
-          </p>
-          <p class="q-mx-xl">
-            <code class="text-wrap"> {{ parse.lnurlauth.pubkey }} </code>
-          </p>
-          <div class="row q-mt-lg">
-            <q-btn unelevated color="deep-purple" type="submit">Login</q-btn>
-            <q-btn v-close-popup flat color="grey" class="q-ml-auto">Cancel</q-btn>
-          </div>
-        </q-form>
-      </div>
-      <div v-else-if="showPaymentStatus">
-        <q-card-section dark bordered>
-          <p class="text-center">
-            <q-icon v-if="paymentDetails.isPayed" name="check_circle" size="5.5em" color="green" />
-            <q-spinner-bars v-else color="purple" size="5.5em" />
-          </p>
-          <p class="q-my-none text-h6 text-center">{{ paymentDetails.message }}</p>
-          <q-expansion-item
-            v-if="paymentDetails.details && paymentDetails.details.length"
-            group="extras"
-            icon="info"
-            class="bg-yellow-1"
-            label="Details"
-          >
-            <span v-html="paymentDetails.details"></span>
-          </q-expansion-item>
-        </q-card-section>
-
-        <div class="row q-mt-lg">
-          <q-space />
-          <q-btn v-close-popup flat color="grey" class="q-ml-auto cursor-pointer">Close</q-btn>
-          <q-space />
-        </div>
-      </div>
+      <invoice-details
+        v-if="showInvoiceDetails"
+        v-bind:invoice="parse.invoice"
+        v-bind:requestedBy="requestedBy"
+        v-bind:paymentRequest="parse.data.request"
+      >
+      </invoice-details>
+      <lnurl-pay
+        v-else-if="showLnurlPayDetails"
+        :lnurlpay="parse.lnurlpay"
+        :amount="parse.data.amount"
+        :comment="parse.data.comment"
+      >
+      </lnurl-pay>
+      <lnurl-withdraw v-else-if="showLnurlWithdrawDetails" :receive="receive"> </lnurl-withdraw>
+      <lnurl-auth v-else-if="showLnurlAuthDetails" :lnurlauth="parse.lnurlauth"> </lnurl-auth>
       <div v-else-if="showErrorDetais">
         <q-card-section dark bordered class="bg-red-5">
           <div class="text-h6">{{ error.title }}</div>
@@ -229,6 +53,7 @@ import bolt11 from 'bolt11'
 import _ from 'lodash'
 import lnbitsApi from '../services/lnbits-api.svc'
 import uiUtils from '../utils/ui-utils'
+import configSvc from '../services/config.svc'
 
 export default {
   name: 'pay-invoice',
@@ -254,11 +79,6 @@ export default {
         },
         paymentChecker: null,
       },
-      paymentDetails: {
-        isPayed: false,
-        message: '...',
-        details: '',
-      },
       receive: {
         show: false,
         status: 'pending',
@@ -271,25 +91,14 @@ export default {
           memo: '',
         },
       },
-      balance: 0,
       requestedBy: '',
     }
   },
   computed: {
-    canPay: function () {
-      if (!this.parse.invoice) return false
-      return this.parse.invoice.sat <= this.balance
-    },
-    hasAccount: function () {
-      if (this.serverUrl && this.activeWallet && this.activeWallet.id) {
-        return true
-      }
-      return false
-    },
     showInvoiceDetails: function () {
       return this.currentView === 'invoice'
     },
-    showLnurlPayDetais: function () {
+    showLnurlPayDetails: function () {
       return this.currentView === 'lnurlPay'
     },
     showLnurlWithdrawDetails: function () {
@@ -301,15 +110,8 @@ export default {
     showErrorDetais: function () {
       return this.currentView === 'error'
     },
-    showPaymentStatus: function () {
-      return this.currentView === 'paymentStatus'
-    },
   },
-  filters: {
-    msatoshiFormat: function (value) {
-      return uiUtils.formatSat(value / 1000)
-    },
-  },
+
   methods: {
     decodeRequest: async function () {
       const paymentRequest = (this.parse.data.request || '').toLowerCase()
@@ -322,59 +124,69 @@ export default {
       }
 
       if (this.parse.data.request.toLowerCase().startsWith('lnurl1')) {
-        try {
-          const response = await lnbitsApi(this.serverUrl).request(
-            'GET',
-            '/api/v1/lnurlscan/' + this.parse.data.request,
-            this.activeWallet.adminkey
-          )
-          let data = response.data
-          if (data.status === 'ERROR') {
-            this.showErrorCard(data.reason, 'Cannot decode request!')
-            return
-          }
-
-          if (data.kind === 'pay') {
-            this.currentView = 'lnurlPay'
-            this.parse.lnurlpay = Object.freeze(data)
-            this.parse.data.amount = data.minSendable / 1000
-          } else if (data.kind === 'auth') {
-            this.currentView = 'lnurlAuth'
-            this.parse.lnurlauth = Object.freeze(data)
-          } else if (data.kind === 'withdraw') {
-            this.currentView = 'lnurlWithdraw'
-            this.receive.status = 'pending'
-            this.receive.paymentReq = null
-            this.receive.paymentHash = null
-            this.receive.data.amount = data.maxWithdrawable / 1000
-            this.receive.data.memo = data.defaultDescription
-            this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
-            this.receive.lnurl = {
-              domain: data.domain,
-              callback: data.callback,
-              fixed: data.fixed,
-            }
-          }
-        } catch (err) {
-          this.showErrorCard(err)
-        }
+        this.handleLnurlRequest()
         return
       }
 
-      let invoice
+      const invoice = this.extractBolt11Invoice()
+      if (!invoice) {
+        return
+      }
+
+      const cleanInvoice = this.enrichInvoiceDataFromTags(invoice)
+      this.parse.invoice = Object.freeze(cleanInvoice)
+    },
+    handleLnurlRequest: async function () {
       try {
-        invoice = bolt11.decode(this.parse.data.request)
+        const response = await lnbitsApi(this.serverUrl).request(
+          'GET',
+          '/api/v1/lnurlscan/' + this.parse.data.request,
+          this.activeWallet.adminkey
+        )
+        let data = response.data
+        if (data.status === 'ERROR') {
+          this.showErrorCard(data.reason, 'Cannot decode request!')
+          return
+        }
+
+        if (data.kind === 'pay') {
+          this.currentView = 'lnurlPay'
+          this.parse.lnurlpay = Object.freeze(data)
+          this.parse.data.amount = data.minSendable / 1000
+        } else if (data.kind === 'auth') {
+          this.currentView = 'lnurlAuth'
+          this.parse.lnurlauth = Object.freeze(data)
+        } else if (data.kind === 'withdraw') {
+          this.currentView = 'lnurlWithdraw'
+          this.receive.status = 'pending'
+          this.receive.paymentReq = null
+          this.receive.paymentHash = null
+          this.receive.data.amount = data.maxWithdrawable / 1000
+          this.receive.data.memo = data.defaultDescription
+          this.receive.minMax = [data.minWithdrawable / 1000, data.maxWithdrawable / 1000]
+          this.receive.lnurl = {
+            domain: data.domain,
+            callback: data.callback,
+            fixed: data.fixed,
+          }
+        }
+      } catch (err) {
+        this.showErrorCard(err)
+      }
+    },
+    extractBolt11Invoice: function () {
+      try {
         this.currentView = 'invoice'
+        return bolt11.decode(this.parse.data.request)
       } catch (err) {
         this.showErrorCard(err, 'Cannot decode BOLT11 invoice!')
-        return
       }
-
-      let cleanInvoice = {
+    },
+    enrichInvoiceDataFromTags: function (invoice) {
+      const cleanInvoice = {
         msat: invoice.millisatoshis,
         sat: invoice.millisatoshis / 1000,
-        fsat: invoice.millisatoshis / 1000,
-        // fsat: LNbits.utils.formatSat(invoice.millisatoshis / 1000), // TODO
+        fsat: uiUtils.formatSat(invoice.millisatoshis / 1000),
         expireDate: invoice.timeExpireDateString,
       }
 
@@ -392,196 +204,15 @@ export default {
         }
       })
 
-      this.parse.invoice = Object.freeze(cleanInvoice)
+      return cleanInvoice
     },
-    fetchBalance: async function () {
-      // TODO: handle http status >=400
-      const response = await lnbitsApi(this.serverUrl).getWallet(this.activeWallet)
-      this.balance = Math.round(response.data.balance / 1000)
-    },
-    payInvoice: async function () {
-      try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).payInvoice(
-          this.activeWallet,
-          this.parse.data.request
-        )
-        clearInterval(this.parse.paymentChecker)
-        setTimeout(() => {
-          clearInterval(this.parse.paymentChecker)
-        }, 40000)
-        const payResponse = await lnbitsApi(this.serverUrl).getPayment(
-          this.activeWallet,
-          response.data.payment_hash
-        )
-
-        this.parse.paymentChecker = setInterval(() => {
-          if (payResponse.data.paid) {
-            clearInterval(this.parse.paymentChecker)
-            const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
-            this.showPaymentCompentedCard(preimageHtml)
-          }
-        }, 1000)
-      } catch (err) {
-        this.showErrorCard(err, 'Cannot pay BOLT11 invoice!')
-      }
-    },
-    payLnurl: async function () {
-      try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).payLnurl(
-          this.activeWallet,
-          this.parse.lnurlpay.callback,
-          this.parse.lnurlpay.description_hash,
-          this.parse.data.amount * 1000,
-          this.parse.lnurlpay.description.slice(0, 120),
-          this.parse.data.comment
-        )
-
-        clearInterval(this.parse.paymentChecker)
-        setTimeout(() => {
-          clearInterval(this.parse.paymentChecker)
-        }, 40000)
-        this.parse.paymentChecker = setInterval(async () => {
-          try {
-            const res = await lnbitsApi(this.serverUrl).getPayment(
-              this.activeWallet,
-              response.data.payment_hash
-            )
-            if (res.data.paid) {
-              clearInterval(this.parse.paymentChecker)
-
-              // show lnurlpay success action
-              if (response.data.success_action) {
-                switch (response.data.success_action.tag) {
-                  case 'url':
-                    const actionDescription = `<strong>Message: </strong> ${response.data.success_action.description}`
-                    const actionLink = `<a target="_blank" style="color: inherit" href="${response.data.success_action.url}">${response.data.success_action.url}</a>`
-                    this.showPaymentCompentedCard(
-                      `<p class="text-wrap">${actionDescription}<br>${actionLink}</p>`
-                    )
-                    break
-                  case 'message':
-                    const message = `<p class="text-wrap"><strong>Message: </strong> ${response.data.success_action.message}</p>`
-                    this.showPaymentCompentedCard(message)
-                    break
-                  default:
-                    const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${
-                      response.data.preimage || ''
-                    } </p>`
-                    this.showPaymentCompentedCard(preimageHtml)
-                    break
-                }
-              }
-            }
-          } catch (err) {
-            this.showErrorCard(err, 'Cannot check LNURL payment!')
-            clearInterval(this.parse.paymentChecker)
-          }
-        }, 2000)
-      } catch (err) {
-        this.showErrorCard(err, 'Cannot pay LNURL invoice!')
-      }
-    },
-    createInvoice: async function () {
-      try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).createInvoice(
-          this.activeWallet,
-          this.receive.data.amount,
-          this.receive.data.memo,
-          this.receive.lnurl && this.receive.lnurl.callback
-        )
-
-        this.receive.status = 'success'
-        this.receive.paymentReq = response.data.payment_request
-        this.receive.paymentHash = response.data.payment_hash
-
-        if (response.data.lnurl_response !== null) {
-          if (response.data.lnurl_response === false) {
-            response.data.lnurl_response = `Unable to connect`
-          }
-
-          if (typeof response.data.lnurl_response === 'string') {
-            this.showErrorCard(
-              response.data.lnurl_response,
-              `${this.receive.lnurl.domain} lnurl-withdraw call failed.`
-            )
-            return
-          }
-          if (response.data.lnurl_response === true) {
-            this.showPaymentInProgressCard(`Invoice sent to ${this.receive.lnurl.domain}!`)
-          }
-        }
-
-        clearInterval(this.receive.paymentChecker)
-        setTimeout(() => {
-          clearInterval(this.receive.paymentChecker)
-          this.showErrorCard(
-            'Timed Out! Invoice was not payed!',
-            `Please also check the LNbits transactions list for this wallet: ${this.activeWallet.name}`
-          )
-        }, 40000)
-        this.receive.paymentChecker = setInterval(async () => {
-          try {
-            const hash = response.data.payment_hash
-            const paymentResponse = await lnbitsApi(this.serverUrl).getPayment(
-              this.activeWallet,
-              hash
-            )
-
-            if (paymentResponse.data.paid) {
-              clearInterval(this.receive.paymentChecker)
-              const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${paymentResponse.data.preimage} </p>`
-              this.showPaymentCompentedCard(preimageHtml)
-            }
-          } catch (err) {
-            this.showErrorCard(err, 'Invoice was not payed!')
-            clearInterval(this.receive.paymentChecker)
-          }
-        }, 5000)
-      } catch (err) {
-        this.showErrorCard(err, 'Cannot create invoice!')
-      }
-    },
-    authLnurl: async function () {
-      try {
-        this.showPaymentInProgressCard('Performing authentication...')
-        await lnbitsApi(this.serverUrl).authLnurl(this.activeWallet, this.parse.lnurlauth.callback)
-        this.showPaymentCompentedCard('Authentication successful!')
-      } catch (err) {
-        if (err.response && err.response.data && err.response.data.reason) {
-          this.showErrorCard(
-            err,
-            `Authentication failed! ${this.parse.lnurlauth.domain} says: ${err.response.data.reason}`
-          )
-        } else {
-          this.showErrorCard(err, 'Cannot authenticate!')
-        }
-      }
-    },
-    gotoOptionsPage() {
-      this.$browser.tabs.create({ url: this.$browser.runtime.getURL('views/options/options.html') })
-    },
-    closeDialog() {
+    closeDialog: function () {
       this.$browser.runtime.sendMessage('hide_iframe')
     },
-    showErrorCard(err, title = 'Error') {
+    showErrorCard: function (err, title = 'Error') {
       this.currentView = 'error'
       this.error.title = title
       this.error.message = (err.message || err) + '.'
-    },
-    showPaymentInProgressCard(message = 'Processing payment...') {
-      this.currentView = 'paymentStatus'
-      this.paymentDetails.isPayed = false
-      this.paymentDetails.message = message
-      this.paymentDetails.details = ''
-    },
-    showPaymentCompentedCard(details = '') {
-      this.currentView = 'paymentStatus'
-      this.paymentDetails.isPayed = true
-      this.paymentDetails.message = 'Success!'
-      this.paymentDetails.details = details
     },
   },
   mounted: async function () {
@@ -590,28 +221,17 @@ export default {
       this.parse.data.request = this.$route.query.paymentRequest || ''
       this.requestedBy = this.$route.query.requestedBy || ''
 
-      const result = await this.$browser.storage.sync.get({ serverUrl: '' })
-      this.serverUrl = result.serverUrl
+      this.serverUrl = await configSvc.getServerUrl()
+      const isConfigValid = await configSvc.isConfigValid()
 
-      const result1 = await this.$browser.storage.sync.get({
-        user: '',
-      })
-      const result2 = await this.$browser.storage.sync.get({
-        walletId: '',
-      })
-      const walletId = result2.walletId
-      const user = result1.user
-      if (this.serverUrl && user && user.id && user.wallets && user.wallets.length) {
-        const activeWallet = user.wallets.find((w) => w.id === walletId)
-        this.activeWallet = activeWallet || user.wallets[0]
+      if (isConfigValid) {
+        this.activeWallet = await configSvc.getActiveWallet()
         this.decodeRequest()
-        this.fetchBalance()
       } else {
-        this.$q.notify({
-          type: 'negative',
-          message: 'No user or wallet found!',
-          caption: `Please check that you are connected to a LNbits server.`,
-        })
+        this.showErrorCard(
+          'No user or wallet found!',
+          'Please check that you are connected to a LNbits server.'
+        )
       }
     } catch (err) {
       console.error(err)

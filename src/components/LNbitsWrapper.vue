@@ -48,6 +48,8 @@
 <script>
 // TODO: can replace with this.$browser?
 import browser from 'webextension-polyfill'
+import configSvc from '../services/config.svc'
+
 export default {
   name: 'lnbits-wrapper',
   data() {
@@ -57,21 +59,11 @@ export default {
     }
   },
   async mounted() {
-    const serverResult = await browser.storage.sync.get({
-      serverUrl: '',
-    })
-    this.serverUrl = serverResult.serverUrl
+    this.serverUrl = await configSvc.getServerUrl()
+    this.user = await configSvc.getUser()
+    const userId = await configSvc.getUserId()
 
-    const result = await browser.storage.sync.get({
-      user: '',
-    })
-    this.user = result.user
-    const userId = (result.user && result.user.id) || ''
-
-    const walletResult = await browser.storage.sync.get({
-      walletId: '',
-    })
-    const walletId = walletResult.walletId || ''
+    const walletId = await configSvc.getWalletId()
 
     // TODO: no user/serverUrl found
 
@@ -86,7 +78,7 @@ export default {
 
     const iFrame = document.getElementById('lnbits-site')
 
-    iFrame.src = `${this.serverUrl}/wallet?usr=${userId}&wal=${walletId}`
+    iFrame.src = `${this.serverUrl}/wallet?usr=${userId}&wal=${walletId || ''}`
     iFrame.addEventListener('load', function () {
       closeLoading()
     })
