@@ -12,6 +12,7 @@ import LnurlAuth from '../../components/LnurlAuth.vue'
 import ErrorCard from '../../components/ErrorCard.vue'
 
 import routes from './routes'
+import inject from './inject'
 
 
 try {
@@ -43,7 +44,15 @@ try {
 
 
   window.addEventListener("message", (e) => {
+    console.log("############ addEventListener", e)
     const data = e.data;
+    if (data.messageId === 'capture-screen') {
+      if (router.currentRoute.path !== '/blank') {
+        router.replace('/blank')
+      }
+      inject.install()
+      return;
+    }
     if (router.currentRoute.path === '/payment') {
       router.replace('/loading')
     }

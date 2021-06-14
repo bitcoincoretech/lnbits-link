@@ -3,14 +3,9 @@
 </template>
 <script>
 export default {
-  name: 'loading',
-  beforeDestroy() {
-    this.$q.loading.hide()
-    this.$q.loading.hide()
-  },
+  name: 'blank',
   mounted: function () {
     document.body.style.background = 'none'
-    this.$q.loading.show()
   },
 }
 </script>

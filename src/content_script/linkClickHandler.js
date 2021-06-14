@@ -38,6 +38,7 @@ function handleLinkClick() {
                     });
                 } else {
                     iframe.contentWindow.postMessage({
+                        messageId: 'payment-request',
                         paymentRequest: link.href
                     }, '*');
                 }
@@ -48,9 +49,20 @@ function handleLinkClick() {
         }, false);
 
 
-        browser.runtime.onMessage.addListener(function (message) {
+        browser.runtime.onMessage.addListener(function (message = '') {
             if (iframe && message == 'hide_iframe') {
                 iframe.style.display = 'none';
+            } else if (message.messageId === 'capture-screen') {
+                if (!isInitialized) {
+                    isInitialized = true;
+                    document.body.appendChild(iframe);
+                    iframe.addEventListener("load", function () {
+                        iframe.contentWindow.postMessage(message, '*');
+                    });
+                } else {
+                    iframe.contentWindow.postMessage(message, '*');
+                }
+                iframe.style.display = null;
             }
         });
     } catch (err) {
