@@ -44,7 +44,6 @@ try {
 
 
   window.addEventListener("message", (e) => {
-    console.log("############ addEventListener", e)
     const data = e.data;
     if (data.messageId === 'capture-screen') {
       if (router.currentRoute.path !== '/blank') {

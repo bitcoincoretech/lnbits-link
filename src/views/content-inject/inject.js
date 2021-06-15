@@ -1,17 +1,8 @@
 import browser from 'webextension-polyfill'
 import QrcodeDecoder from 'qrcode-decoder'
 
-var monitor = window.monitor;
-var capture = window.capture;
-var guide = window.guide;
 
-try {
-  guide.remove();
-  capture.remove();
-  monitor.remove();
-} catch (e) {}
-
-capture = (function () {
+const capture = (function () {
   let box;
   let _left;
   let _top;
@@ -32,7 +23,7 @@ capture = (function () {
   }
 
   function remove() {
-    capture2({
+    captureScreenPart({
       method: 'captured',
       left: left + 1,
       top: top + 1,
@@ -41,12 +32,12 @@ capture = (function () {
       devicePixelRatio: window.devicePixelRatio,
       title: document.title,
       service: window.service // used by Reverse Image Search extension
-    }).then(x => {
-      console.log('xxx:', x)
+    }).then(dataUrl => {
       const qr = new QrcodeDecoder();
-      qr.decodeFromImage(x).then((res, data) => {
-        console.log('res', res);
-        console.log('data', data);
+      qr.decodeFromImage(dataUrl).then((res) => {
+        window.postMessage({
+          paymentRequest: res.data
+        })
       });
     }).catch(e => console.error(e))
     guide.remove();
@@ -84,7 +75,7 @@ capture = (function () {
   };
 })();
 
-guide = (function () {
+const guide = (function () {
   let guide1;
   let guide2;
   let guide3;
@@ -126,7 +117,7 @@ guide = (function () {
   };
 })();
 
-monitor = (function () {
+const monitor = (function () {
   function keydown(e) {
     if (e.keyCode === 27) {
       guide.remove();
@@ -144,7 +135,7 @@ monitor = (function () {
   };
 })();
 
-function capture2(request) {
+function captureScreenPart(request) {
   return new Promise(async function (resolve, reject) {
     const dataUrl = await browser.tabs.captureVisibleTab(null, {
       format: 'png'
@@ -178,6 +169,13 @@ function capture2(request) {
 }
 
 function install() {
+
+  try {
+    guide.remove();
+    capture.remove();
+    monitor.remove();
+  } catch (e) {}
+
   guide.install();
   capture.install();
   monitor.install();
