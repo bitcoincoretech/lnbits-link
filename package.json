@@ -1,6 +1,6 @@
 {
   "name": "lnbits-extension",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "LNbits browser extension",
   "scripts": {
     "manifest:firefox": "jq -s '.[0] * .[1]' src/manifests/base.manifest.json src/manifests/firefox.manifest.json > src/manifest.json",

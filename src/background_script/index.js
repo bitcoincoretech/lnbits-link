@@ -8,7 +8,7 @@ browser.runtime.onMessage.addListener(async function (message, sender) {
 browser.contextMenus.create({
     'id': 'capture-ln-qrcode',
     'title': 'Lightning QR Code Capture',
-    'contexts': ['page', 'selection', 'link', 'frame']
+    'contexts': ['page', 'selection', 'link', 'frame', 'image']
 });
 
 browser.contextMenus.onClicked.addListener(async (message, tab) => {
