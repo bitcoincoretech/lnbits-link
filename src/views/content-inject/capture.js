@@ -39,7 +39,12 @@ const capture = (function () {
           paymentRequest: res.data
         })
       });
-    }).catch(e => console.error(e))
+    }).catch(e => {
+      console.error(e)
+      window.postMessage({
+        paymentRequest: null
+      })
+    })
     guide.remove();
     capture.remove();
     monitor.remove();
