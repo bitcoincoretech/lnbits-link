@@ -1,3 +1,6 @@
+/**
+ * Source: https://github.com/schomery/easy-screenshot ("license": "MPL 2.0")
+ */
 import browser from 'webextension-polyfill'
 import QrcodeDecoder from 'qrcode-decoder'
 
