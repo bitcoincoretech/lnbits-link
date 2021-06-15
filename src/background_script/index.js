@@ -13,10 +13,8 @@ browser.contextMenus.create({
 
 browser.contextMenus.onClicked.addListener(async (message, tab) => {
     if (message.menuItemId === "capture-ln-qrcode") {
-        console.log('capture-ln-qrcode')
         browser.tabs.sendMessage(tab.id, {
             messageId: 'capture-screen'
         });
     }
-    console.log('message', message)
 });

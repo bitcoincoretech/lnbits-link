@@ -28,21 +28,9 @@ function handleLinkClick() {
                 // stop redirect or request for app selection
                 e.preventDefault()
 
-                if (!isInitialized) {
-                    isInitialized = true;
-                    document.body.appendChild(iframe);
-                    iframe.addEventListener("load", function () {
-                        iframe.contentWindow.postMessage({
-                            paymentRequest: link.href
-                        }, '*');
-                    });
-                } else {
-                    iframe.contentWindow.postMessage({
-                        messageId: 'payment-request',
-                        paymentRequest: link.href
-                    }, '*');
-                }
-                iframe.style.display = null;
+                _postMessageToIFrame({
+                    paymentRequest: link.href
+                });
             } catch (err) {
                 console.error(err)
             }
@@ -52,19 +40,25 @@ function handleLinkClick() {
         browser.runtime.onMessage.addListener(function (message = '') {
             if (iframe && message == 'hide_iframe') {
                 iframe.style.display = 'none';
-            } else if (message.messageId === 'capture-screen') {
-                if (!isInitialized) {
-                    isInitialized = true;
-                    document.body.appendChild(iframe);
-                    iframe.addEventListener("load", function () {
-                        iframe.contentWindow.postMessage(message, '*');
-                    });
-                } else {
-                    iframe.contentWindow.postMessage(message, '*');
-                }
-                iframe.style.display = null;
+                return;
+            }
+            if (message.messageId === 'capture-screen') {
+                _postMessageToIFrame(message)
             }
         });
+
+        function _postMessageToIFrame(message) {
+            if (!isInitialized) {
+                isInitialized = true;
+                document.body.appendChild(iframe);
+                iframe.addEventListener("load", function () {
+                    iframe.contentWindow.postMessage(message, '*');
+                });
+            } else {
+                iframe.contentWindow.postMessage(message, '*');
+            }
+            iframe.style.display = null;
+        }
     } catch (err) {
         console.error(err)
     }
