@@ -12,7 +12,7 @@ import LnurlAuth from '../../components/LnurlAuth.vue'
 import ErrorCard from '../../components/ErrorCard.vue'
 
 import routes from './routes'
-import inject from './inject'
+import capture from './capture'
 
 
 try {
@@ -49,7 +49,7 @@ try {
       if (router.currentRoute.path !== '/blank') {
         router.replace('/blank')
       }
-      inject.install()
+      capture.install()
       return;
     }
     if (router.currentRoute.path === '/payment') {

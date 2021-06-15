@@ -39,9 +39,9 @@ mix
   .js('src/views/options/options.js', 'dist/views/options/')
 
   .copy('src/views/content-inject/content.html', 'dist/views/content-inject/')
-  .copy('src/views/content-inject/inject.css', 'dist/views/content-inject/')
+  .copy('src/views/content-inject/capture.css', 'dist/views/content-inject/')
   .js('src/views/content-inject/content.js', 'dist/views/content-inject/')
-  .js('src/views/content-inject/inject.js', 'dist/views/content-inject/')
+  .js('src/views/content-inject/capture.js', 'dist/views/content-inject/')
 
   .js('src/content_script/index.js', 'dist/content_script/index.js')
   .js('src/background_script/index.js', 'dist/background_script/index.js')
