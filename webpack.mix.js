@@ -17,8 +17,7 @@ mix
         bolt11$: '@ln-zap/bolt11/payreq.js',
         stream$: 'readable-stream/readable.js',
         vueQrcode$: 'vue-qrcode/lib/esm.js',
-        qrcode$: 'qrcode/build/qrcode.js',//node_modules/qrcode/build/qrcode.js
-        'qcode-decoder$': 'qcode-decoder/build/qcode-decoder.min.js',
+        qrcode$: 'qrcode/build/qrcode.js',
         'qrcode-decoder$': 'qrcode-decoder/dist/index.esm.js'
       },
     },

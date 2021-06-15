@@ -1,6 +1,4 @@
 import browser from 'webextension-polyfill'
-import QCodeDecoder from 'qcode-decoder'
-import qrcode from 'qrcode'
 import QrcodeDecoder from 'qrcode-decoder'
 
 var monitor = window.monitor;
@@ -34,16 +32,6 @@ capture = (function () {
   }
 
   function remove() {
-    // chrome.runtime.sendMessage({
-    //   method: 'captured',
-    //   left: left + 1,
-    //   top: top + 1,
-    //   width: width - 2,
-    //   height: height - 2,
-    //   devicePixelRatio: window.devicePixelRatio,
-    //   title: document.title,
-    //   service: window.service // used by Reverse Image Search extension
-    // });
     capture2({
       method: 'captured',
       left: left + 1,
@@ -55,15 +43,6 @@ capture = (function () {
       service: window.service // used by Reverse Image Search extension
     }).then(x => {
       console.log('xxx:', x)
-      // const qr = new QCodeDecoder();
-      // qr.decodeFromImage(x, function (err, res) {
-      //   console.log('QR code decode', res)
-      //   console.log('QR Code err', err)
-      // });
-      // qrcode.decode(x, function (err, res) {
-      //   console.log('QR code decode', res)
-      //   console.log('QR Code err', err)
-      // })
       const qr = new QrcodeDecoder();
       qr.decodeFromImage(x).then((res, data) => {
         console.log('res', res);
