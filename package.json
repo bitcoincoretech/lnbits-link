@@ -1,6 +1,6 @@
 {
   "name": "lnbits-extension",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "LNbits browser extension",
   "scripts": {
     "manifest:firefox": "jq -s '.[0] * .[1]' src/manifests/base.manifest.json src/manifests/firefox.manifest.json > src/manifest.json",
@@ -30,6 +30,7 @@
     "laravel-mix": "^6.0.11",
     "lodash": "^4.17.21",
     "qrcode": "^1.4.4",
+    "qrcode-decoder": "^0.1.3",
     "quasar": "^1.13.2",
     "vue": "^2.6.12",
     "vue-loader": "^15.9.6",

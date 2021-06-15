@@ -16,7 +16,9 @@ mix
         lodash$: 'lodash/index.js',
         bolt11$: '@ln-zap/bolt11/payreq.js',
         stream$: 'readable-stream/readable.js',
-        vueQrcode$: 'vue-qrcode/lib/esm.js'
+        vueQrcode$: 'vue-qrcode/lib/esm.js',
+        qrcode$: 'qrcode/build/qrcode.js',
+        'qrcode-decoder$': 'qrcode-decoder/dist/index.esm.js'
       },
     },
   })
@@ -29,15 +31,17 @@ mix
   .copy('node_modules/quasar/dist/quasar.css', 'dist/css/quasar.css')
 
   .copy('src/views/popup/popup.html', 'dist/views/popup/')
-  .copy('src/views/popup/style.css', 'dist/views/popup/')
-  .js('src/views/popup/popup.js', 'dist/views/popup/')
+  .copy('src/views/popup/css/style.css', 'dist/views/popup/css')
+  .js('src/views/popup/js/popup.js', 'dist/views/popup/js')
 
   .copy('src/views/options/options.html', 'dist/views/options/')
-  .copy('src/views/options/style.css', 'dist/views/options/')
-  .js('src/views/options/options.js', 'dist/views/options/')
+  .copy('src/views/options/css/style.css', 'dist/views/options/css')
+  .js('src/views/options/js/options.js', 'dist/views/options/js')
 
   .copy('src/views/content-inject/content.html', 'dist/views/content-inject/')
-  .js('src/views/content-inject/content.js', 'dist/views/content-inject/')
+  .copy('src/views/content-inject/css/capture.css', 'dist/views/content-inject/css')
+  .js('src/views/content-inject/js/content.js', 'dist/views/content-inject/js')
+  .js('src/views/content-inject/js/capture.js', 'dist/views/content-inject/js')
 
   .js('src/content_script/index.js', 'dist/content_script/index.js')
   .js('src/background_script/index.js', 'dist/background_script/index.js')

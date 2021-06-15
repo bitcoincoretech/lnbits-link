@@ -3,16 +3,16 @@ import Vue from 'vue'
 import VueRouter from 'vuerouter'
 import VueQrcode from 'vueQrcode'
 import Quasar from 'quasar'
-import Options from '../../components/Options.vue'
-import InvoiceDetails from '../../components/InvoiceDetails.vue'
-import PaymentStatus from '../../components/PaymentStatus.vue'
-import LnurlPay from '../../components/LnurlPay.vue'
-import LnurlWithdraw from '../../components/LnurlWithdraw.vue'
-import LnurlAuth from '../../components/LnurlAuth.vue'
-import ErrorCard from '../../components/ErrorCard.vue'
+import Options from '../../../components/Options.vue'
+import InvoiceDetails from '../../../components/InvoiceDetails.vue'
+import PaymentStatus from '../../../components/PaymentStatus.vue'
+import LnurlPay from '../../../components/LnurlPay.vue'
+import LnurlWithdraw from '../../../components/LnurlWithdraw.vue'
+import LnurlAuth from '../../../components/LnurlAuth.vue'
+import ErrorCard from '../../../components/ErrorCard.vue'
 
 import routes from './routes'
-
+import messageHandler from './messaga-handler'
 
 try {
   initIFrame()
@@ -32,7 +32,7 @@ try {
   const router = new VueRouter({
     routes
   })
-  //find better default
+  
   router.replace('/loading')
 
   new Vue({
@@ -43,19 +43,7 @@ try {
 
 
   window.addEventListener("message", (e) => {
-    const data = e.data;
-    if (router.currentRoute.path === '/payment') {
-      router.replace('/loading')
-    }
-    setTimeout(() => {
-      router.replace({
-        path: '/payment',
-        query: {
-          paymentRequest: data.paymentRequest,
-          requestedBy: e.origin
-        }
-      })
-    })
+    messageHandler.handle(e, router)
   }, false);
 
 

@@ -1,7 +1,8 @@
 {
-    "/dist/views/popup/popup.js": "/dist/views/popup/popup.js",
-    "/dist/views/options/options.js": "/dist/views/options/options.js",
-    "/dist/views/content-inject/content.js": "/dist/views/content-inject/content.js",
+    "/dist/views/popup/js/popup.js": "/dist/views/popup/js/popup.js",
+    "/dist/views/options/js/options.js": "/dist/views/options/js/options.js",
+    "/dist/views/content-inject/js/content.js": "/dist/views/content-inject/js/content.js",
+    "/dist/views/content-inject/js/capture.js": "/dist/views/content-inject/js/capture.js",
     "/dist/content_script/index.js": "/dist/content_script/index.js",
     "/dist/background_script/index.js": "/dist/background_script/index.js",
     "/dist/css/base.css": "/dist/css/base.css",
@@ -15,8 +16,9 @@
     "/dist/css/app.css": "/dist/css/app.css",
     "/dist/css/quasar.css": "/dist/css/quasar.css",
     "/dist/views/popup/popup.html": "/dist/views/popup/popup.html",
-    "/dist/views/popup/style.css": "/dist/views/popup/style.css",
+    "/dist/views/popup/css/style.css": "/dist/views/popup/css/style.css",
     "/dist/views/options/options.html": "/dist/views/options/options.html",
-    "/dist/views/options/style.css": "/dist/views/options/style.css",
-    "/dist/views/content-inject/content.html": "/dist/views/content-inject/content.html"
+    "/dist/views/options/css/style.css": "/dist/views/options/css/style.css",
+    "/dist/views/content-inject/content.html": "/dist/views/content-inject/content.html",
+    "/dist/views/content-inject/css/capture.css": "/dist/views/content-inject/css/capture.css"
 }
