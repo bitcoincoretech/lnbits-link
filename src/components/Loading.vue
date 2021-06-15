@@ -6,7 +6,6 @@ export default {
   name: 'loading',
   beforeDestroy() {
     this.$q.loading.hide()
-    this.$q.loading.hide()
   },
   mounted: function () {
     document.body.style.background = 'none'
