@@ -51,7 +51,7 @@ The extension can be installed on:
  - Quasar
 
 ## Inspired by
- - [Jules](https://github.com/joule-labs/joule-extension), [bumi/lightning-browser-extension](https://github.com/bumi/lightning-browser-extension), [anonaddy/browser-extension](https://github.com/anonaddy/browser-extension), [fregante/browser-extension-template](https://github.com/fregante/browser-extension-template), [anderspitman/chrome-extension-css-isolation-example](https://github.com/anderspitman/chrome-extension-css-isolation-example)
+ - [Jules](https://github.com/joule-labs/joule-extension), [bumi/lightning-browser-extension](https://github.com/bumi/lightning-browser-extension), [anonaddy/browser-extension](https://github.com/anonaddy/browser-extension), [fregante/browser-extension-template](https://github.com/fregante/browser-extension-template), [anderspitman/chrome-extension-css-isolation-example](https://github.com/anderspitman/chrome-extension-css-isolation-example), [easy-screenshot](https://github.com/schomery/easy-screenshot)
 
 ## Releases
 See [Releases Page](https://github.com/bitcoincoretech/lnbits-link/releases)
