@@ -104,8 +104,6 @@ export default {
           this.receive.lnurl && this.receive.lnurl.callback
         )
 
-        console.log('response.data', response.data)
-
         this.receive.status = 'success'
         this.receive.paymentReq = response.data.payment_request
         this.receive.paymentHash = response.data.payment_hash
