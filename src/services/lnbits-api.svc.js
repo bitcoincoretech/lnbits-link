@@ -59,6 +59,13 @@ function lnbitsApi(serverUrl) {
                 '/api/v1/payments/' + paymentHash,
                 wallet.inkey
             )
+        },
+        getWithdrawLinks: function (wallet) {
+            return this.request(
+                'get',
+                '/withdraw/api/v1/links/',
+                wallet.inkey
+            )
         }
     }
 }

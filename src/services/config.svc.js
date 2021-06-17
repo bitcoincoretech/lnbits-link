@@ -52,6 +52,19 @@ async function setWalletId(value) {
     });
 }
 
+async function getWithdrawLinks() {
+    const result = await browser.storage.sync.get({
+        withdrawLinks: ''
+    })
+    return result.walletId
+}
+
+async function setWithdrawLinks(value) {
+    return browser.storage.sync.set({
+        withdrawLinks: value
+    });
+}
+
 async function getActiveWallet() {
     const user = await getUser()
     const walletId = await getWalletId()
@@ -64,6 +77,7 @@ async function cleanConfig() {
     await setUserId('')
     await setWalletId('')
     await setUser({})
+    await setWithdrawLinks([])
 }
 
 async function isConfigValid() {
@@ -83,6 +97,8 @@ export default {
     getWalletId,
     setWalletId,
     getActiveWallet,
+    getWithdrawLinks,
+    setWithdrawLinks,
     cleanConfig,
     isConfigValid,
 }
