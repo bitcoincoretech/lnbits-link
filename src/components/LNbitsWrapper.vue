@@ -2,7 +2,11 @@
   <q-layout>
     <q-page-container>
       <q-page>
-        <iframe id="lnbits-site" class="iframe-style"></iframe>
+        <iframe
+          id="lnbits-site"
+          class="iframe-style"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
       </q-page>
     </q-page-container>
 
