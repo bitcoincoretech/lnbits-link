@@ -132,7 +132,6 @@ export default {
             const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
             this.showPaymentCompentedCard(preimageHtml)
             this.$emit("allowancePaid");
-            // show notif if allowance, close
           }
         }, 1000)
       } catch (err) {
