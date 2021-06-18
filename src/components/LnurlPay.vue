@@ -193,7 +193,6 @@ export default {
       this.paymentStatus.details = ''
     },
     showPaymentCompentedCard(details = '') {
-      console.log('showPaymentCompentedCard', details)
       this.currentView = 'paymentStatus'
       this.paymentStatus.isPayed = true
       this.paymentStatus.message = 'Success!'

@@ -70,7 +70,7 @@ export default {
       isConfigValid: false,
       paymentChecker: null,
       currentView: 'invoice',
-      allowance: null,
+      withdrawLink: null,
       paymentStatus: {
         isPayed: false,
         message: '...',
@@ -93,8 +93,8 @@ export default {
       const response = await lnbitsApi(this.serverUrl).getWithdrawLinks(this.activeWallet)
       const withdrawLinks = response.data || []
       await configSvc.setWithdrawLinks(withdrawLinks)
-      this.allowance = withdrawLinks.find((link) => link.title === this.requestedBy)
-      if (this.allowance) {
+      this.withdrawLink = withdrawLinks.find((link) => link.title === this.requestedBy)
+      if (this.withdrawLink) {
         await this.payInvoice()
       }
     } catch (err) {
@@ -115,16 +115,8 @@ export default {
   methods: {
     payInvoice: async function () {
       try {
-     
-        if (this.allowance) {
-          console.log('###################### will try to pay using allowance: ', this.allowance)
-          this.showPaymentInProgressCard('Using allowance for payment')
-        } else {
-          this.showPaymentInProgressCard()
-          await lnbitsApi(this.serverUrl).payInvoice(this.activeWallet, this.paymentRequest)
-        }
-
-        console.log('######################  this.invoice: ', this.invoice)
+        this.showPaymentInProgressCard(this.withdrawLink ? 'Using allowance for payment' : '')
+        await this.callPaymentApi()
         clearInterval(this.paymentChecker)
         setTimeout(() => {
           clearInterval(this.paymentChecker)
@@ -139,6 +131,7 @@ export default {
             clearInterval(this.paymentChecker)
             const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
             this.showPaymentCompentedCard(preimageHtml)
+            this.$emit("allowancePaid");
             // show notif if allowance, close
           }
         }, 1000)
@@ -150,6 +143,20 @@ export default {
       // TODO: handle http status >=400
       const response = await lnbitsApi(this.serverUrl).getWallet(this.activeWallet)
       this.balance = Math.round(response.data.balance / 1000)
+    },
+    callPaymentApi: async function () {
+      if (!this.withdrawLink) {
+        await lnbitsApi(this.serverUrl).payInvoice(this.activeWallet, this.paymentRequest)
+        return
+      }
+      const response = await lnbitsApi(this.serverUrl).withdrawFunds(
+        this.activeWallet,
+        this.withdrawLink,
+        this.paymentRequest
+      )
+      if (response.data && response.data.status === 'ERROR') {
+        throw new Error(response.data.reason || 'Unknown Reason')
+      }
     },
     showPaymentInProgressCard(message = 'Processing payment...') {
       this.currentView = 'paymentStatus'
