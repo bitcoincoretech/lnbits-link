@@ -63,7 +63,7 @@ function lnbitsApi(serverUrl) {
         getWithdrawLinks: function (wallet) {
             return this.request(
                 'get',
-                '/withdraw/api/v1/links/',
+                '/withdraw/api/v1/links',
                 wallet.inkey
             )
         }

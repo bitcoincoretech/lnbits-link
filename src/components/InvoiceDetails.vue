@@ -70,6 +70,7 @@ export default {
       isConfigValid: false,
       paymentChecker: null,
       currentView: 'invoice',
+      allowance: null,
       paymentStatus: {
         isPayed: false,
         message: '...',
@@ -87,6 +88,18 @@ export default {
     this.isConfigValid = await configSvc.isConfigValid()
     this.activeWallet = await configSvc.getActiveWallet()
     this.fetchBalance()
+
+    try {
+      const response = await lnbitsApi(this.serverUrl).getWithdrawLinks(this.activeWallet)
+      const withdrawLinks = response.data || []
+      await configSvc.setWithdrawLinks(withdrawLinks)
+      this.allowance = withdrawLinks.find((link) => link.title === this.requestedBy)
+      if (this.allowance) {
+        await this.payInvoice()
+      }
+    } catch (err) {
+      console.error(err)
+    }
   },
 
   computed: {
@@ -102,18 +115,23 @@ export default {
   methods: {
     payInvoice: async function () {
       try {
-        this.showPaymentInProgressCard()
-        const response = await lnbitsApi(this.serverUrl).payInvoice(
-          this.activeWallet,
-          this.paymentRequest
-        )
+     
+        if (this.allowance) {
+          console.log('###################### will try to pay using allowance: ', this.allowance)
+          this.showPaymentInProgressCard('Using allowance for payment')
+        } else {
+          this.showPaymentInProgressCard()
+          await lnbitsApi(this.serverUrl).payInvoice(this.activeWallet, this.paymentRequest)
+        }
+
+        console.log('######################  this.invoice: ', this.invoice)
         clearInterval(this.paymentChecker)
         setTimeout(() => {
           clearInterval(this.paymentChecker)
         }, 40000)
         const payResponse = await lnbitsApi(this.serverUrl).getPayment(
           this.activeWallet,
-          response.data.payment_hash
+          this.invoice.hash
         )
 
         this.paymentChecker = setInterval(() => {
@@ -121,6 +139,7 @@ export default {
             clearInterval(this.paymentChecker)
             const preimageHtml = `<p class="text-wrap"><strong>Preimage: </strong> ${payResponse.data.preimage} </p>`
             this.showPaymentCompentedCard(preimageHtml)
+            // show notif if allowance, close
           }
         }, 1000)
       } catch (err) {
