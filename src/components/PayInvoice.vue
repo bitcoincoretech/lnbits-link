@@ -6,6 +6,7 @@
         v-bind:invoice="parse.invoice"
         v-bind:requestedBy="requestedBy"
         v-bind:paymentRequest="parse.data.request"
+        @allowancePaid="closeDialog"
       >
       </invoice-details>
       <lnurl-pay
@@ -132,7 +133,7 @@ export default {
       if (!invoice) {
         return
       }
-
+      
       const cleanInvoice = this.enrichInvoiceDataFromTags(invoice)
       this.parse.invoice = Object.freeze(cleanInvoice)
     },
