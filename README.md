@@ -1,4 +1,4 @@
-# lnbits browser extension (alpha version)
+# lnbits browser extension
 ![lnbits extension 3](https://user-images.githubusercontent.com/2951406/120298961-3485bd00-c2d3-11eb-941a-b6bee5e54e6f.png)
 
 Light browser extensions for **[LNbits](https://lnbits.org/)**. It allows users to connect to any existing **[LNbits](https://lnbits.org/)** server and make payments in the browser. It supports:
